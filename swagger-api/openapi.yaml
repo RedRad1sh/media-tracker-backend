@@ -1,0 +1,144 @@
+openapi: '3.0.0'
+info:
+  title: Media Tracker Api
+  version: '1.0.0'
+servers:
+  - url: https://api.server.test/v1
+tags:
+  - name: content-api
+  - name: user-api
+paths:
+  /movies:
+    get:
+      tags:
+      - content-api
+      summary: Получение списка фильмов
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+  /movies/{id}:
+    get:
+      tags:
+      - content-api
+      summary: Получение информации о фильме по ID
+      parameters:
+        - name: id
+          in: path
+          description: ID фильма
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+        '404':
+          description: Фильм не найден
+  /books:
+    get:
+      tags:
+      - content-api
+      summary: Получение списка книг
+      responses:
+        '200':
+          description: Успешный запрос
+  /books/{id}:
+    get:
+      tags:
+      - content-api
+      summary: Получение информации о книге по ID
+      parameters:
+        - name: id
+          in: path
+          description: ID книги
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+        '404':
+          description: Книга не найдена
+  /games:
+    get:
+      tags:
+      - content-api
+      summary: Получение списка игр
+      responses:
+        '200':
+          description: Успешный запрос
+  /games/{id}:
+    get:
+      tags:
+      - content-api
+      summary: Получение информации о игре по ID
+      parameters:
+        - name: id
+          in: path
+          description: ID игры
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+        '404':
+          description: Игра не найдена
+  /reviews:
+    post:
+      tags:
+      - user-api
+      summary: Создание нового отзыва
+      responses:
+        '201':
+          description: Отзыв успешно создан
+  /reviews/{id}:
+    get:
+      tags:
+      - user-api
+      summary: Получение отзыва по ID
+      parameters:
+        - name: id
+          in: path
+          description: ID отзыва
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+        '404':
+          description: Отзыв не найден
+    delete:
+      tags:
+      - user-api
+      summary: Удаление отзыва по ID
+      parameters:
+        - name: id
+          in: path
+          description: ID отзыва
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Отзыв успешно удален
+
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        director:
+          type: string
+        year:
+          type: integer
