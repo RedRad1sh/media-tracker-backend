@@ -19,5 +19,6 @@ https://github.com/chenweiqun/swagger-vue
 - **В конце пути обязательно ставить букву s, например: /movieS (генерация в библиотеке кривая, пришлось изворачиваться, сейчас без s может сломаться)**
 - Желательно придерживаться правил REST: https://tproger.ru/translations/luchshie-praktiki-razrabotki-rest-api-20-sovetov?ysclid=lq4bx1yp9b912458411
 
+Запуск сервера: npm start
 
 http://localhost:3000/movies/ - можно чекнуть тестовый запрос к руту
