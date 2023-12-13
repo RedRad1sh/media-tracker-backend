@@ -11,7 +11,7 @@ https://github.com/chenweiqun/swagger-vue
 1. Установить swagger-codegen: npm install -g swagger-node-codegen
 2. Затем запустить батник swagger-gen.bat
 3. Далее в папке api/gen появятся руты и сервисы, которые можно подключать.
-Подключаются только routes в index.js уже есть пример. Сервисы нужно копировать в папку src/api/services/ и заинжектить в рут в файле index.js.
+Подключаются только routes, в index.js уже есть пример. Сервисы нужно копировать в папку src/api/services/ и заинжектить в рут в файле index.js.
 Затем можно реализовать бизнес логику в методах сервиса.
 
 Правила описания Swagger:
