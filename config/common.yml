@@ -2,6 +2,9 @@ defaults: &defaults
   api:
     port: 3000
 
+  mongo:
+    url: "mongodb+srv://fakemailforregister:FEdvdL4Leml4Wpin@madiatracker.sabzsmo.mongodb.net/?retryWrites=true&w=majority"
+
   logger:
     name: Media Tracker Api
     level: debug
