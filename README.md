@@ -1,5 +1,11 @@
 # Media Tracker Backend
 
+Запуск сервера: npm start
+
+http://localhost:3000/movies/ - можно чекнуть тестовый запрос к руту
+
+https://media-tracker-backend.onrender.com/movies/ - доступно из сети. При деплое в мастер обновляется
+
 Описание новых методов бека производится в формате Swagger OpenApi в файле: swagger-api/openapi.yaml. Это не сильно сложно.
 Так будет быстрее, потому что по этим файлам будет генерироваться код рутов и сервисов для express.
 Кроме того потом по этому сваггеру можно будет сгенерировать клиентский код для Vue.js с использованием Axios:
@@ -18,9 +24,3 @@ https://github.com/chenweiqun/swagger-vue
 - Все сущности рассматривать в виде коллекций и соответственно называть api соответствующе.
 - **В конце пути обязательно ставить букву s, например: /movieS (генерация в библиотеке кривая, пришлось изворачиваться, сейчас без s может сломаться)**
 - Желательно придерживаться правил REST: https://tproger.ru/translations/luchshie-praktiki-razrabotki-rest-api-20-sovetov?ysclid=lq4bx1yp9b912458411
-
-Запуск сервера: npm start
-
-http://localhost:3000/movies/ - можно чекнуть тестовый запрос к руту
-
-https://media-tracker-backend.onrender.com/movies/ - доступно из сети. При деплое в мастер обновляется
