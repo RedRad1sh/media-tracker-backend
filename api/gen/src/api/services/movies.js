@@ -1,3 +1,4 @@
+// КОД ЭТОГО ФАЙЛА НЕОБХОДИМО СКОПИРОВАТЬ В src/api/services
 const ServerError = require('../../lib/error');
 /**
  * @param {Object} options
@@ -35,7 +36,6 @@ module.exports.getMovies = async (options) => {
  * @return {Promise}
  */
 module.exports.getMoviesById = async (options) => {
-  let moviesId = options.id;
   // Implement your business logic here...
   //
   // This function should return as follows:
