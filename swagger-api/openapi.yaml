@@ -94,6 +94,13 @@ paths:
       tags:
       - user-api
       summary: Создание нового отзыва
+      parameters:
+        - name: requestBody
+          in: body
+          description: Тело запроса для отзыва
+          required: false
+          schema:
+            $ref: "#/components/schemas/Movie" 
       responses:
         '201':
           description: Отзыв успешно создан

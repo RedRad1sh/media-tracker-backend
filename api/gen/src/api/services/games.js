@@ -1,10 +1,11 @@
+// КОД ЭТОГО ФАЙЛА НЕОБХОДИМО СКОПИРОВАТЬ В src/api/services
 const ServerError = require('../../lib/error');
 /**
  * @param {Object} options
  * @throws {Error}
  * @return {Promise}
  */
-module.exports.getMovies = async (options) => {
+module.exports.getGames = async (options) => {
   // Implement your business logic here...
   //
   // This function should return as follows:
@@ -24,18 +25,17 @@ module.exports.getMovies = async (options) => {
 
   return {
     status: 200,
-    data: 'getMovies ok!'
+    data: 'getGames ok!'
   };
 };
 
 /**
  * @param {Object} options
- * @param {Integer} options.id ID фильма
+ * @param {Integer} options.id ID игры
  * @throws {Error}
  * @return {Promise}
  */
-module.exports.getMoviesById = async (options) => {
-  let moviesId = options.id;
+module.exports.getGamesById = async (options) => {
   // Implement your business logic here...
   //
   // This function should return as follows:
@@ -55,7 +55,7 @@ module.exports.getMoviesById = async (options) => {
 
   return {
     status: 200,
-    data: 'getMoviesById ok!'
+    data: 'getGamesById ok!'
   };
 };
 
