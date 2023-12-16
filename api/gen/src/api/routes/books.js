@@ -13,6 +13,8 @@ function injectService(service) {
  */
 router.get('/', async (req, res, next) => {
   const options = {
+    page: req.query['page'],
+    size: req.query['size']
   };
 
   try {
@@ -36,7 +38,12 @@ router.get('/:id', async (req, res, next) => {
 
   try {
     const result = await books.getBooksById(options);
-    res.status(result.status || 200).send(result.data);
+    res.status(result.status || 200).send({
+      data: result.data.docs,
+      totalItems: result.data.totalDocs,
+      currentPage: result.data.page - 1,
+      totalPages: result.data.totalPages
+    });
   } catch (err) {
     next(err);
   }

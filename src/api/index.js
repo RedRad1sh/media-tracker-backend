@@ -21,6 +21,11 @@ let moviesController = require('../../api/gen/src/api/routes/movies')
 moviesController.injectService(require('./services/movies'));
 app.use('/movies', moviesController.router);
 // Пример подключения сгенерированного рута и инжекта сервиса в рут
+let gamesController = require('../../api/gen/src/api/routes/games')
+// В сервисе вся бизнес логика - обращение к БД и т.п.
+gamesController.injectService(require('./services/games'));
+app.use('/games', gamesController.router);
+// Пример подключения сгенерированного рута и инжекта сервиса в рут
 
 // catch 404
 app.use((req, res, next) => {
@@ -35,6 +40,5 @@ app.use((err, req, res, next) => {
   log.error(`Error ${status} (${msg}) on ${req.method} ${req.url} with payload ${req.body}.`);
   res.status(status).send({ status, error: msg });
 });
-
 
 module.exports = app;

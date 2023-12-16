@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose');
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Movie = new Schema({
     title: {type: String, unique: false, required: true},
@@ -15,5 +16,7 @@ const Movie = new Schema({
     video: {type: String, unique: false, required: false},
     user_rating: {type: Number, unique: false, required: false}
 })
+
+Movie.plugin(mongoosePaginate);
 
 module.exports = model('Movie', Movie);

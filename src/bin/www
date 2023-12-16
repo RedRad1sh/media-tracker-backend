@@ -8,6 +8,7 @@ const http = require('http');
 const config = require('../lib/config');
 const logger = require('../lib/logger');
 const mongoose = require('mongoose');
+const gameFill = require('../jobs/game-fill');
 
 const log = logger(config.logger);
 
@@ -33,6 +34,15 @@ main().catch(err => console.log(err));
 async function main() {
   await mongoose.connect(config.mongo.url);
   server.listen(port);
+}
+
+
+/**
+ * Initialize Cron Jobs
+ */
+init().catch(err => console.log(err));
+async function init() {
+  gameFill.initGamesCronJob()
 }
 
 /**

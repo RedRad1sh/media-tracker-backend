@@ -16,6 +16,11 @@ defaults: &defaults
       error: STDERR
       fatal:
 
+  fillSettings:
+    games:
+      cron: '0 */1 * * * *'
+      limitItemsForPage: 25
+
 development:
   <<: *defaults
 
