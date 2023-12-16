@@ -26,9 +26,9 @@ production:
     name: media-tracker
     level: debug
     levels:
-      trace:
+      trace: STDOUT
       debug: STDOUT
       info: STDOUT
       warn: STDOUT
-      error: STDOUT
-      fatal: STDOUT
+      error: STDERR
+      fatal: STDERR
