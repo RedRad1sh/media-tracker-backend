@@ -23,6 +23,7 @@ production:
   <<: *defaults
 
   logger:
+    name: media-tracker
     level: debug
     levels:
       trace:
