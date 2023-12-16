@@ -22,3 +22,5 @@ https://github.com/chenweiqun/swagger-vue
 Запуск сервера: npm start
 
 http://localhost:3000/movies/ - можно чекнуть тестовый запрос к руту
+
+https://media-tracker-backend.onrender.com/movies/ - доступно из сети. При деплое в мастер обновляется
