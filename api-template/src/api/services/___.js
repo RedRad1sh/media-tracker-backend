@@ -1,3 +1,4 @@
+// КОД ЭТОГО ФАЙЛА НЕОБХОДИМО СКОПИРОВАТЬ В src/api/services
 const ServerError = require('../../lib/error');
 {{#each operation}}
   {{#each this.path}}
