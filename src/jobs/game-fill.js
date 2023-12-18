@@ -17,7 +17,6 @@ module.exports.initGamesCronJob = async () => {
     CronJob.from({
         cronTime: config.fillSettings.games.cron,
         onTick: async function () {
-            log.info('You will see this message every minute');
             await fillContentDB('movie', saveNextGameInfo);
         },
         start: false
@@ -31,18 +30,15 @@ async function getGameId(page) { // на 1 странице 25 игр
         const response = await axios.get(steamChartsUrl);
         const $ = cheerio.load(response.data);
 
-        //console.log( $('.game-name.left').find('a').attr('href'));
-
         $('.game-name').each((index, element) => {
             const gameId = $(element).find('a').attr('href').split('/').pop();;
             gamesData.push(gameId);
         });
 
-        //  console.log(gamesData);
         return gamesData;
 
     } catch (error) {
-        console.error('Произошла ошибка при получении информации о играх:', error.message);
+        log.error('Произошла ошибка при получении информации об играх:', error.message);
     }
 }
 
@@ -79,12 +75,12 @@ async function saveNextGameInfo(pageNum) {
                 await game.save()
 
             } else {
-                console.log(`Не удалось получить информацию для игры с ID ${games_id_arr[i]}`);
+                log.warn(`Не удалось получить информацию для игры с ID ${games_id_arr[i]}`);
             }
         } catch (error) {
-            console.error('Произошла ошибка:', error.message);
+            log.error('Произошла ошибка:', error.message);
         }
 
     }
-    console.log('Все запросы завершены');
+    log.info('Все запросы завершены');
 }

@@ -12,18 +12,17 @@ const log = logger(config.logger);
  */
 module.exports.getGames = async (options) => {
   try {
+    log.debug(`Параметры пагинации, page: ${options.page} и size: ${options.size}`)
+
     const limit = options.size ? + options.size : 3;
     const offset = options.page ? options.page * limit : 0;
 
-    console.log({limit, offset})
-    console.log(options.size)
-    console.log(options.page)
     return {
       status: 200,
       data: await Game.paginate({}, { offset, limit })
     };
   } catch (err) {
-    log.debug(err)
+    log.error(err)
     throw err
   }
 };

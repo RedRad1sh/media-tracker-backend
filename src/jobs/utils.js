@@ -1,7 +1,7 @@
 const logger = require('../lib/logger');
 const config = require('../lib/config');
 const log = logger(config.logger);
-const FillJobScheme = require('../model/FillJobScheme')
+const FillJobScheme = require('../model/FillJob')
 
 /**
  * 
@@ -11,7 +11,7 @@ const FillJobScheme = require('../model/FillJobScheme')
 module.exports.fillContentDB = async (type, fillFunction) => {
     let fillJobResult = await FillJobScheme.findOne({ type: type });
 
-    console.log(fillJobResult);
+    log.debug(fillJobResult);
 
     if (fillJobResult != null) {
         const lastUpdatedPage = fillJobResult.lastUpdatedPage + 1;
