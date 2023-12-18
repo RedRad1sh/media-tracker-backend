@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose');
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Book = new Schema({
     title: {type: String, unique: false, required: true},
@@ -12,5 +13,6 @@ const Book = new Schema({
     categories_ru: {type: String, unique: false, required: false},
     user_rating: {type: Number, unique: false, required: false}
 })
+Book.plugin(mongoosePaginate);
 
 module.exports = model('Book', Book);
