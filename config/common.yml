@@ -20,6 +20,11 @@ defaults: &defaults
     games:
       cron: '0 */1 * * * *'
       limitItemsForPage: 25
+      isJobStart: false
+    books:
+      cron: '0 */1 * * * *'
+      limitItemsForPage: 40
+      isJobStart: false
 
 development:
   <<: *defaults
