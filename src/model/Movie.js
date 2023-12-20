@@ -2,6 +2,7 @@ const {Schema, model} = require('mongoose');
 const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Movie = new Schema({
+    kinopoisk_app_id: {type: String, unique: true, required: true},
     title: {type: String, unique: false, required: true},
     description: {type: String, unique: false, required: true},
     img_url: {type: String, unique: false, required: false},

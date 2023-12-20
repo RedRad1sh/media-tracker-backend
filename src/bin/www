@@ -9,6 +9,7 @@ const config = require('../lib/config');
 const logger = require('../lib/logger');
 const mongoose = require('mongoose');
 const gameFill = require('../jobs/game-fill');
+const movieFill = require('../jobs/movie-fill');
 const bookFill = require('../jobs/book-fill');
 
 const log = logger(config.logger);
@@ -43,6 +44,7 @@ async function main() {
  */
 init().catch(err => log.error(err));
 async function init() {
+  movieFill.initMoviesCronJob();
   gameFill.initGamesCronJob();
   bookFill.initBooksCronJob();
 }
