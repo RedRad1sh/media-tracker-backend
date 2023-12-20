@@ -1,5 +1,8 @@
 const ServerError = require('../../lib/error');
 const Movie = require("../../model/Movie");
+const logger = require('../../lib/logger');
+const config = require('../../lib/config');
+const log = logger(config.logger);
 
 /**
  * @param {Object} options
@@ -30,27 +33,15 @@ module.exports.getMovies = async (options) => {
  * @return {Promise}
  */
 module.exports.getMoviesById = async (options) => {
-  let moviesId = options.id;
-  // Implement your business logic here...
-  //
-  // This function should return as follows:
-  //
-  // return {
-  //   status: 200, // Or another success code.
-  //   data: [] // Optional. You can put whatever you want here.
-  // };
-  //
-  // If an error happens during your business logic implementation,
-  // you should throw an error as follows:
-  //
-  // throw new ServerError({
-  //   status: 500, // Or another error code.
-  //   error: 'Server Error' // Or another error message.
-  // });
-
-  return {
-    status: 200,
-    data: 'getMoviesById ok!'
-  };
+  try {
+    let moviesId = options.id;
+    return {
+      status: 200,
+      data: await Movie.paginate({}, { offset, limit })
+    };
+  } catch (err) {
+    log.error(err)
+    throw err
+  }
 };
 
