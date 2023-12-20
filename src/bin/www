@@ -10,6 +10,7 @@ const logger = require('../lib/logger');
 const mongoose = require('mongoose');
 const gameFill = require('../jobs/game-fill');
 const movieFill = require('../jobs/movie-fill');
+const bookFill = require('../jobs/book-fill');
 
 const log = logger(config.logger);
 

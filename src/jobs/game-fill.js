@@ -19,7 +19,7 @@ module.exports.initGamesCronJob = async () => {
         onTick: async function () {
             await fillContentDB('game', saveNextGameInfo);
         },
-        start: true
+        start: config.fillSettings.games.isJobStart
     });
 }
 
