@@ -17,9 +17,9 @@ module.exports.initGamesCronJob = async () => {
     CronJob.from({
         cronTime: config.fillSettings.games.cron,
         onTick: async function () {
-            await fillContentDB('movie', saveNextGameInfo);
+            await fillContentDB('game', saveNextGameInfo);
         },
-        start: false
+        start: true
     });
 }
 

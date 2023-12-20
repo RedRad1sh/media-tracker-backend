@@ -19,7 +19,7 @@ module.exports.fillContentDB = async (type, fillFunction) => {
         fillFunction(lastUpdatedPage);
 
         await FillJobScheme.updateOne(
-            { type: 'movie' },
+            { type: type },
             { updateTime: new Date(), updatedPagesNum: config.fillSettings.games.updatedPagesNum, lastUpdatedPage: lastUpdatedPage },
             { upsert: true }
         );
@@ -27,7 +27,7 @@ module.exports.fillContentDB = async (type, fillFunction) => {
     } else {
         fillFunction(1);
         fillJobResult = new FillJobScheme({
-            type: "movie",
+            type: type,
             updateTime: new Date(),
             updatedPagesNum: config.fillSettings.games.updatedPagesNum,
             lastUpdatedPage: 1

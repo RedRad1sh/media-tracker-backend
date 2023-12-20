@@ -17,6 +17,10 @@ defaults: &defaults
       fatal:
 
   fillSettings:
+    movies:
+      cron: '0 */1 * * * *'
+      limitItemsForPage: 50
+      isJobStart: true
     games:
       cron: '0 */1 * * * *'
       limitItemsForPage: 25
