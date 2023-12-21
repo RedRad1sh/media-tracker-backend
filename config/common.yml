@@ -16,6 +16,12 @@ defaults: &defaults
       error: STDERR
       fatal:
 
+  apiparams:
+    movies:
+      url: 'https://api.kinopoisk.dev/v1.3/movie'
+      key: '1FDYTQ7-NEV45FZ-QGFP4QT-8056F80'
+   
+
   fillSettings:
     movies:
       cron: '0 */1 * * * *'

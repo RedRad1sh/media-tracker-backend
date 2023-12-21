@@ -9,7 +9,7 @@ const log = logger(config.logger);
  * @throws {Error}
  * @return {Promise}
  */
-module.exports.getGames = async (options) => {
+module.exports.getBooks = async (options) => {
     try {
         log.debug(`Параметры пагинации, page: ${options.page} и size: ${options.size}`)
 
@@ -32,27 +32,17 @@ module.exports.getGames = async (options) => {
  * @throws {Error}
  * @return {Promise}
  */
-module.exports.getGamesById = async (options) => {
-    // Implement your business logic here...
-    //
-    // This function should return as follows:
-    //
-    // return {
-    //   status: 200, // Or another success code.
-    //   data: [] // Optional. You can put whatever you want here.
-    // };
-    //
-    // If an error happens during your business logic implementation,
-    // you should throw an error as follows:
-    //
-    // throw new ServerError({
-    //   status: 500, // Or another error code.
-    //   error: 'Server Error' // Or another error message.
-    // });
+module.exports.getBooksById = async (options) => {
+    try {
+        let bookId = options.id;
 
-    return {
-        status: 200,
-        data: 'getGamesById ok!'
-    };
+        return {
+          status: 200,
+          data: await Book.findOne({ _id: bookId })
+        };
+      } catch (err) {
+        log.error(err)
+        throw err
+      }
 };
 

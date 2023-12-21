@@ -7,10 +7,7 @@ const logger = require('../lib/logger');
 const config = require('../lib/config');
 const log = logger(config.logger);
 
-const API_URL_FILMS = {
-    url: 'https://api.kinopoisk.dev/v1.3/movie',
-    key: '1FDYTQ7-NEV45FZ-QGFP4QT-8056F80'
-};;
+;
 
 module.exports.initMoviesCronJob = async () => {
     CronJob.from({
@@ -28,10 +25,10 @@ async function saveNextFilmInfo(pageNum) {
     try {
         const options = {
             method: 'get',
-            url: `${API_URL_FILMS.url}?limit=${limit}&page=${pageNum}&selectFields=id&selectFields=name&selectFields=description&selectFields=year&selectFields=rating&selectFields=movieLength&selectFields=countries&selectFields=persons&&selectFields=poster&&selectFields=genres&&selectFields=videos`,
+            url: `${config.apiparams.movies.url}?limit=${limit}&page=${pageNum}&selectFields=id&selectFields=name&selectFields=description&selectFields=year&selectFields=rating&selectFields=movieLength&selectFields=countries&selectFields=persons&&selectFields=poster&&selectFields=genres&&selectFields=videos`,
             headers: {
                 'Content-Type': 'application/json',
-                'X-API-KEY': API_URL_FILMS.key,
+                'X-API-KEY': config.apiparams.movies.key,
             },
         };
 
