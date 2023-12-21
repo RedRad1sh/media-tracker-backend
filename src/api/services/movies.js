@@ -37,7 +37,7 @@ module.exports.getMoviesById = async (options) => {
     let moviesId = options.id;
     return {
       status: 200,
-      data: await Movie.paginate({}, { offset, limit })
+      data: await Movie.findOne({ _id: moviesId })
     };
   } catch (err) {
     log.error(err)
