@@ -8,11 +8,12 @@ const gamesRoute = require('../../api/gen/src/api/routes/games')
 
 const log = logger(config.logger);
 const app = express();
+const cors = require('cors');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
+app.use(cors());
 /*
  * Routes
  */
