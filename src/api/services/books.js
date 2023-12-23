@@ -1,5 +1,4 @@
 const Book = require("../../model/Book");
-
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const log = logger(config.logger);
@@ -28,14 +27,13 @@ module.exports.getBooks = async (options) => {
 
 /**
  * @param {Object} options
- * @param {Integer} options.id ID игры
+ * @param {Number} options.id ID игры
  * @throws {Error}
  * @return {Promise}
  */
-module.exports.getBooksById = async (options) => {
+module.exports.getBookById = async (options) => {
     try {
         let bookId = options.id;
-
         return {
           status: 200,
           data: await Book.findOne({ _id: bookId })
