@@ -22,12 +22,8 @@ app.use(cors());
 // В сервисе вся бизнес логика - обращение к БД и т.п.
 moviesRoute.injectService(require('./services/movies'));
 app.use('/movies', moviesRoute.router);
-
 gamesRoute.injectService(require('./services/games'));
 app.use('/games', gamesRoute.router);
-booksRoute.injectService(require('./services/books'));
-app.use('/books', booksRoute.router);
-
 booksRoute.injectService(require('./services/books'));
 app.use('/books', booksRoute.router);
 

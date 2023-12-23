@@ -37,7 +37,7 @@ module.exports.getMovieById = async (options) => {
     let movieId = options.id;
     return {
       status: 200,
-      data: await Movie.findOne({ _id: movieId })
+      data: await Movie.findById(movieId)
     };
   } catch (err) {
     log.error(err)
@@ -45,3 +45,27 @@ module.exports.getMovieById = async (options) => {
   }
 };
 
+/**
+ * @throws {Error}
+ * @returns {Promise}
+ */
+module.exports.getMoviesGenres = async () => {
+  try {
+    const genres = await Movie.find().distinct("genres");
+    const result = genres.map(genre => {
+      return genre.split(",").map(g => {
+        let capitalizedGenre = g.trim();
+        capitalizedGenre = capitalizedGenre[0].toUpperCase() + capitalizedGenre.slice(1);
+        return capitalizedGenre;
+      });
+    }).flat()
+
+    return {
+      status: 200,
+      data: Array.from(new Set(result))
+    };
+  } catch (err) {
+    log.error(err)
+    throw err
+  }
+}
