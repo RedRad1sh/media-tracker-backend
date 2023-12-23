@@ -14,7 +14,8 @@ function injectService(service) {
 router.get('/', async (req, res, next) => {
   const options = {
     page: req.query['page'],
-    size: req.query['size']
+    size: req.query['size'],
+    searchString: req.query['search'] ?? ""
   };
 
   try {
