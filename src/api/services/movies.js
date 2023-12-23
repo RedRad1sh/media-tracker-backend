@@ -18,7 +18,7 @@ module.exports.getMovies = async (options) => {
 
     return {
       status: 200,
-      data: await Movie.paginate({title: {$regex: searchString}}, { offset, limit })
+      data: await Movie.paginate({title: {$regex: {$regex: new RegExp(searchString.toLowerCase(), "i")}}}, { offset, limit })
     };
   } catch (err) {
     log.error(err)

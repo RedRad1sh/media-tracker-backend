@@ -18,7 +18,7 @@ module.exports.getGames = async (options) => {
 
     return {
       status: 200,
-      data: await Game.paginate({title: {$regex: searchString}}, { offset, limit })
+      data: await Game.paginate({title: {$regex:  new RegExp(searchString.toLowerCase(), "i")}}, { offset, limit })
     };
   } catch (err) {
     log.error(err)

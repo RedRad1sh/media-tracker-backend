@@ -18,7 +18,7 @@ module.exports.getBooks = async (options) => {
         
         return {
             status: 200,
-            data: await Book.paginate({title: {$regex: searchString}}, { offset, limit })
+            data: await Book.paginate({title: {$regex: new RegExp(searchString.toLowerCase(), "i")}}, { offset, limit })
         };
     } catch (err) {
         log.error(err)
