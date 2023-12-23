@@ -19,7 +19,12 @@ router.get('/', async (req, res, next) => {
 
   try {
     const result = await books.getBooks(options);
-    res.status(result.status || 200).send(result.data);
+    res.status(result.status || 200).send({
+      data: result.data.docs,
+      totalItems: result.data.totalDocs,
+      currentPage: result.data.page - 1,
+      totalPages: result.data.totalPages
+    });
   } catch (err) {
     return res.status(500).send({
       status: 500,
@@ -38,12 +43,7 @@ router.get('/:id', async (req, res, next) => {
 
   try {
     const result = await books.getBooksById(options);
-    res.status(result.status || 200).send({
-      data: result.data.docs,
-      totalItems: result.data.totalDocs,
-      currentPage: result.data.page - 1,
-      totalPages: result.data.totalPages
-    });
+    res.status(result.status || 200).send(result.data);
   } catch (err) {
     next(err);
   }
