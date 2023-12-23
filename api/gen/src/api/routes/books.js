@@ -42,7 +42,7 @@ router.get('/:id', async (req, res, next) => {
   };
 
   try {
-    const result = await books.getBooksById(options);
+    const result = await books.getBookById(options);
     res.status(result.status || 200).send(result.data);
   } catch (err) {
     next(err);

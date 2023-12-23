@@ -41,7 +41,7 @@ router.get('/:id', async (req, res, next) => {
   };
 
   try {
-    const result = await games.getGamesById(options);
+    const result = await games.getGameById(options);
     res.status(result.status || 200).send(result.data);
   } catch (err) {
     next(err);

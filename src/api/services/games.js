@@ -1,6 +1,4 @@
 const Game = require("../../model/Game");
-
-const ServerError = require('../../lib/error');
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const log = logger(config.logger);
@@ -29,14 +27,13 @@ module.exports.getGames = async (options) => {
 
 /**
  * @param {Object} options
- * @param {Integer} options.id ID игры
+ * @param {Number} options.id ID игры
  * @throws {Error}
  * @return {Promise}
  */
-module.exports.getGamesById = async (options) => {
+module.exports.getGameById = async (options) => {
   try {
     let gameId = options.id;
-    
     return {
       status: 200,
       data: await Game.findOne({ _id: gameId })

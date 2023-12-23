@@ -7,8 +7,6 @@ const logger = require("../lib/logger");
 const config = require('../lib/config');
 const log = logger(config.logger);
 
-const API_URL_BOOKS = 'https://www.googleapis.com/books/v1/volumes';
-
 module.exports.initBooksCronJob = async () => {
     CronJob.from({
         cronTime: config.fillSettings.books.cron,
@@ -27,7 +25,7 @@ async function saveNextBookInfo(pageNum) {
         const currentIndex = pageNum === 1 ? 0 : (pageNum - 1) * limitItemsForPage - 1;
 
         for (const category of categories) {
-            const response = await axios.get(API_URL_BOOKS, {
+            const response = await axios.get(config.apiparams.books.url, {
                 params: {
                     q: `subject:${category}`,
                     langRestrict: 'ru',

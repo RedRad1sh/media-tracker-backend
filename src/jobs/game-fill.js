@@ -8,11 +8,6 @@ const logger = require('../lib/logger');
 const config = require('../lib/config');
 const log = logger(config.logger);
 
-const API_URL_GAMES = {
-    url_id: 'https://steamcharts.com/top/p.',
-    url_data: 'https://store.steampowered.com/api/appdetails'
-};
-
 module.exports.initGamesCronJob = async () => {
     CronJob.from({
         cronTime: config.fillSettings.games.cron,
@@ -26,12 +21,12 @@ module.exports.initGamesCronJob = async () => {
 async function getGameId(page) { // на 1 странице 25 игр
     try {
         const gamesData = [];
-        const steamChartsUrl = `${API_URL_GAMES.url_id}${page}`;
+        const steamChartsUrl = `${config.apiparams.games.urlId}${page}`;
         const response = await axios.get(steamChartsUrl);
         const $ = cheerio.load(response.data);
 
         $('.game-name').each((index, element) => {
-            const gameId = $(element).find('a').attr('href').split('/').pop();;
+            const gameId = $(element).find('a').attr('href').split('/').pop();
             gamesData.push(gameId);
         });
 
@@ -42,21 +37,20 @@ async function getGameId(page) { // на 1 странице 25 игр
     }
 }
 
-
 async function saveNextGameInfo(pageNum) {
     const games_id_arr = await getGameId(pageNum);
     log.debug(`Игры со следующими appId будут проиндексированы: ${games_id_arr}`);
 
     for (let i = 0; i < games_id_arr.length; i++) {
         try {
-            const appInfoUrl = `${API_URL_GAMES.url_data}?appids=${games_id_arr[i]}&l=russian`;
+            const appInfoUrl = `${config.apiparams.games.urlData}?appids=${games_id_arr[i]}&l=russian`;
 
             log.debug(`Индексируется игра по ссылке: ${appInfoUrl}`);
 
             const appInfoResponse = await axios.get(appInfoUrl);
             const gameInfo = appInfoResponse.data[games_id_arr[i]].data;
 
-            if (appInfoResponse.data && appInfoResponse.data[games_id_arr[i]] && gameInfo && gameInfo.type == 'game') {
+            if (appInfoResponse.data && appInfoResponse.data[games_id_arr[i]] && gameInfo && gameInfo.type === 'game') {
                 let game = new Game({
                     steam_app_id: games_id_arr[i],
                     title: gameInfo.name,
