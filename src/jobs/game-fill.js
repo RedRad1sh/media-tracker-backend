@@ -54,6 +54,7 @@ async function saveNextGameInfo(pageNum) {
                 let game = new Game({
                     steam_app_id: games_id_arr[i],
                     title: gameInfo.name,
+                    short_description: gameInfo.short_description,
                     description: gameInfo.detailed_description,
                     img_url: gameInfo.header_image,
                     metcrt_rating: 'metacritic' in gameInfo ? gameInfo.metacritic.score : null,
