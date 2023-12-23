@@ -14,10 +14,11 @@ module.exports.getBooks = async (options) => {
 
         const limit = options.size ? + options.size : 3;
         const offset = options.page ? options.page * limit : 0;
-
+        const searchString = options.searchString != null ? `.*${options.searchString}.*` : '.*';
+        
         return {
             status: 200,
-            data: await Book.paginate({}, { offset, limit })
+            data: await Book.paginate({title: {$regex: searchString}}, { offset, limit })
         };
     } catch (err) {
         log.error(err)
