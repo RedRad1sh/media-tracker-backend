@@ -10,16 +10,16 @@ const User = new Schema({
     img_url: { type: String, unique: false, required: false },
     userLists: [{
         type: Schema.Types.ObjectId,
-        ref: 'UserLists'
+        ref: 'UserList'
     }],
-    // userRatings: [{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'UserRatings'
-    // }],
-    // userReviews: [{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'UserReviews'
-    // }]
+    userRatings: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserRating'
+    }],
+    userReviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'UserReview'
+    }]
 })
 User.plugin(mongoosePaginate);
 
