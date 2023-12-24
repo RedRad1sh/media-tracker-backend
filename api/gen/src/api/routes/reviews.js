@@ -13,7 +13,7 @@ function injectService(service) {
  */
 router.post('/', async (req, res, next) => {
   const options = {
-    requestBody: req.body['requestBody']
+    requestBody: req.body
   };
 
   try {
@@ -61,5 +61,49 @@ router.delete('/:id', async (req, res, next) => {
     });
   }
 });
+
+/**
+ * Получение списка отзывов для контента
+ */
+router.get('/content/:contentType/:contentId', async (req, res, next) => {
+  const options = {
+    contentType: req.params['contentType'],
+    contentId: req.params['contentId']
+  };
+
+  try {
+    const result = await reviews.getByContentId(options);
+    res.status(result.status || 200).send({
+      data: result.data.docs,
+      totalItems: result.data.totalDocs,
+      currentPage: result.data.page - 1,
+      totalPages: result.data.totalPages
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: 500,
+      error: 'Server Error'
+    });
+  }
+});
+
+/**
+ * Получение списка отзывов для пользователя
+ */
+router.get('/user/:userId', async (req, res, next) => {
+  const options = {
+    userId: req.params['userId']
+  };
+
+  try {
+    const result = await reviews.getByUserId(options);
+    res.status(result.status || 200).send(result.data);
+  } catch (err) {
+    next(err);
+  }
+});
+
+module.exports = { router, injectService };
+
 
 module.exports = {router, injectService};
