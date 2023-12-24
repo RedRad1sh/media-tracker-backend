@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 const mongoosePaginate = require("mongoose-paginate-v2");
 
-const UserLists = new Schema({
+const UserList = new Schema({
     user_id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -11,7 +11,7 @@ const UserLists = new Schema({
     content_id: { type: String, unique: false, required: true },
     action: { type: String, unique: false, required: true }
 })
-UserLists.index({ user_id: 1, content_id: 1}, { unique: true });
-UserLists.plugin(mongoosePaginate);
+UserList.index({ user_id: 1, content_id: 1}, { unique: true });
+UserList.plugin(mongoosePaginate);
 
-module.exports = model('UserLists', UserLists);
+module.exports = model('UserList', UserList);
