@@ -36,7 +36,7 @@ router.get('/', async (req, res, next) => {
 /**
  * Получение информации о игре по ID
  */
-router.get('/:id', async (req, res, next) => {
+router.get('/game/:id', async (req, res, next) => {
   const options = {
     id: req.params['id']
   };
@@ -46,6 +46,21 @@ router.get('/:id', async (req, res, next) => {
     res.status(result.status || 200).send(result.data);
   } catch (err) {
     next(err);
+  }
+});
+
+/**
+ * Получение списка жанров игр
+ */
+router.get('/genres', async (req, res, next) => {
+  try {
+    const result = await games.getGamesGenres();
+    res.status(result.status || 200).send(result.data);
+  } catch (err) {
+    return res.status(500).send({
+      status: 500,
+      error: 'Server Error'
+    });
   }
 });
 

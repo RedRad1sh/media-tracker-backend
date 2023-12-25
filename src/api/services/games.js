@@ -37,11 +37,33 @@ module.exports.getGameById = async (options) => {
     let gameId = options.id;
     return {
       status: 200,
-      data: await Game.findOne({ _id: gameId })
+      data: await Game.findById(gameId)
     };
   } catch (err) {
     log.error(err)
     throw err
   }
 };
+
+/**
+ * @throws {Error}
+ * @returns {Promise}
+ */
+module.exports.getGamesGenres = async () => {
+  try {
+    const genres = await Game.find().distinct("genres");
+    const result = genres.map(genre => {
+      return genre.split(",");
+    }).flat()
+
+    return {
+      status: 200,
+      data: Array.from(new Set(result))
+    };
+  } catch (err) {
+    log.error(err)
+    throw err
+  }
+}
+
 

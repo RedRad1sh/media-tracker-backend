@@ -37,7 +37,7 @@ module.exports.getBookById = async (options) => {
         let bookId = options.id;
         return {
           status: 200,
-          data: await Book.findOne({ _id: bookId })
+          data: await Book.findById(bookId)
         };
       } catch (err) {
         log.error(err)
@@ -45,3 +45,19 @@ module.exports.getBookById = async (options) => {
       }
 };
 
+/**
+ * @throws {Error}
+ * @returns {Promise}
+ */
+module.exports.getBooksGenres = async () => {
+    try {
+        const genres = await Book.find().distinct("categories_ru");
+        return {
+            status: 200,
+            data: Array.from(new Set(genres))
+        };
+    } catch (err) {
+        log.error(err)
+        throw err
+    }
+}
