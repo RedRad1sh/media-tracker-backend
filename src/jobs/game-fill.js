@@ -53,6 +53,7 @@ async function saveNextGameInfo(pageNum) {
             if (appInfoResponse.data && appInfoResponse.data[games_id_arr[i]] && gameInfo && gameInfo.type === 'game') {
                 let game = new Game({
                     steam_app_id: games_id_arr[i],
+                    const_content_id: games_id_arr[i],
                     title: gameInfo.name,
                     description: gameInfo.detailed_description,
                     img_url: gameInfo.header_image,

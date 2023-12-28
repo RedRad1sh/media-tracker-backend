@@ -37,6 +37,7 @@ async function saveNextFilmInfo(pageNum) {
             if (responseData && item.id) {
              let film = new Movie({
                 kinopoisk_app_id: item.id,
+                const_content_id: item.id,
                 title: item.name,
                 description: item.description,
                 img_url: item.poster.url,

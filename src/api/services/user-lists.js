@@ -3,6 +3,11 @@ const UserList = require("../../model/user/UserList");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const log = logger(config.logger);
+const Movie = require("../../model/Movie");
+const Game = require("../../model/Game");
+const Book = require("../../model/Book");
+const schemas = { Movie: Movie, Game: Game, Book: Book }
+
 
 /**
  * @param {Object} options
@@ -19,14 +24,13 @@ module.exports.addContent = async (options) => {
             content_id: requestBody.content_id,
             content_type: requestBody.content_type
         }, requestBody, { upsert: true, new: true })
-        await userList.populate('content_id', null, userList.content_type)
-        if (userList.content_id === null) {
-            log.error(`Не существует записи в ${requestBody.content_type} с id ${requestBody.content_id}`)
-            await userList.deleteOne()
-            throw new Error()
-        }
+
+        await fillContentJson(requestBody.content_type, userList);
+
+        await validateListRecord(userList, requestBody);
         await User.findByIdAndUpdate(requestBody.user_id,
             { '$addToSet': { userLists: userList } })
+
         return {
             status: 200,
             data: userList
@@ -48,8 +52,8 @@ module.exports.getByUserId = async (options) => {
         let userId = options.userId;
         let user = await User.findById(userId);
         let userLists = await Promise.all((await user.populate('userLists')).userLists
-            .map(async item => item.populate('content_id', null, item.content_type)))
-        
+            .map(async item => fillContentJson(item.content_type, item)))
+
         log.debug(`Найдены списки ${userLists}`)
 
         let movieList = userLists
@@ -73,4 +77,19 @@ module.exports.getByUserId = async (options) => {
         throw err
     }
 };
+
+async function fillContentJson(content_type, userList) {
+    const id = (await schemas[content_type]
+        .findOne({ 'const_content_id': userList.content_id }))._id;
+    userList.content_id = id;
+    return await userList.populate('content_id', null, content_type);
+}
+
+async function validateListRecord(userList, requestBody) {
+    if (userList.content_id === null) {
+        log.error(`Не существует записи в ${requestBody.content_type} с id ${requestBody.content_id}`);
+        await userList.deleteOne();
+        throw new Error();
+    }
+}
 

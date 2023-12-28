@@ -3,6 +3,7 @@ const mongoosePaginate = require("mongoose-paginate-v2");
 
 const Book = new Schema({
     google_id: {type: String, unique: true, required: true},
+    const_content_id: {type: String, unique: true, required: true},
     title: {type: String, unique: false, required: true},
     description: {type: String, unique: false, required: true},
     img_url: {type: String, unique: false, required: false},
