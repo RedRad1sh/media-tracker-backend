@@ -14,7 +14,8 @@ router.get('/', async (req, res, next) => {
   const options = {
     page: req.query['page'],
     size: req.query['size'],
-    searchString: req.query['search']  ?? ""
+    searchString: req.query['search']  ?? "",
+    genres: req.query['genres'] ?? []
   };
 
   try {

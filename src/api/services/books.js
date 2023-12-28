@@ -15,10 +15,16 @@ module.exports.getBooks = async (options) => {
         const limit = options.size ? + options.size : 3;
         const offset = options.page ? options.page * limit : 0;
         const searchString = options.searchString != null ? `.*${options.searchString}.*` : '.*';
-        
+        const genres = options.genres.join("|");
+
+        let query = {title: {$regex: new RegExp(searchString.toLowerCase(), "i")}};
+        if (genres.length) {
+            query.categories_ru = {$regex: new RegExp(genres.toLowerCase(), "i")};
+        }
+
         return {
             status: 200,
-            data: await Book.paginate({title: {$regex: new RegExp(searchString.toLowerCase(), "i")}}, { offset, limit })
+            data: await Book.paginate(query, { offset, limit })
         };
     } catch (err) {
         log.error(err)
