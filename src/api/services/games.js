@@ -37,7 +37,7 @@ module.exports.getGameById = async (options) => {
     let gameId = options.id;
     return {
       status: 200,
-      data: await Game.findOne({ _id: gameId })
+      data: await Game.findOne({ const_content_id: gameId })
     };
   } catch (err) {
     log.error(err)

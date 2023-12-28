@@ -37,7 +37,7 @@ module.exports.getMovieById = async (options) => {
     let movieId = options.id;
     return {
       status: 200,
-      data: await Movie.findOne({ _id: movieId })
+      data: await Movie.findOne({ const_content_id: movieId })
     };
   } catch (err) {
     log.error(err)

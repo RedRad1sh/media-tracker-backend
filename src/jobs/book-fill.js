@@ -41,6 +41,7 @@ async function saveNextBookInfo(pageNum) {
                 if (responseData.items && item.id) {
                     let book = new Book({
                         google_id: item.id,
+                        const_content_id: item.id,
                         title: item.volumeInfo.title,
                         description: item.volumeInfo.description,
                         img_url: item.volumeInfo.imageLinks && (item.volumeInfo.imageLinks.medium
