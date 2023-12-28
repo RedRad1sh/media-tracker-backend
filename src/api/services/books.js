@@ -37,7 +37,7 @@ module.exports.getBookById = async (options) => {
         let bookId = options.id;
         return {
           status: 200,
-          data: await Book.findOne({ _id: bookId })
+          data: await Book.findOne({ const_content_id: bookId })
         };
       } catch (err) {
         log.error(err)
