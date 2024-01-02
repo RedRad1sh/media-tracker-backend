@@ -62,6 +62,12 @@ def recommend_simple():
     result = recommend_content(recommend_object)
     return jsonify(result), 201
 
+def run_jobs():
+
+    while True: 
+        schedule.run_pending() 
+        time.sleep(1)
+
 if __name__ == '__main__':
 >>>>>>> b95a42b (Реализованы простые рекомендации на основе разницы в указанных полях бд (фильм - фильм, игра - игра, книга - книга))
     app.run(debug=True)

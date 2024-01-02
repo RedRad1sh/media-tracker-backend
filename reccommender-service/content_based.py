@@ -23,10 +23,9 @@ content_type_to_plural = {
 =======
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from mongo_client import read_mongo
-import time
-import os
+from db_cache_update import load_df
 
+from multi_rake import Rake
 
 # df_1 = pd.read_csv("movies.csv")
 movies_features = ['actors','genres','directors']
@@ -213,10 +212,12 @@ def recommend_content(recommend_object):
 =======
             if i>10:
                 break
+        else:
+            print('')
     return { 'ids': result }
 
 def create_recommend_list(df_1, recommend_object):
-    cv = CountVectorizer() #creating new CountVectorizer() object
+    cv = TfidfVectorizer()
     count_matrix = cv.fit_transform(df_1['combined_features'])
     cosine_sim = cosine_similarity(count_matrix)
 
@@ -231,12 +232,15 @@ def create_recommend_list(df_1, recommend_object):
     sorted_similar = sorted(similar,key=lambda x:x[1],reverse=True)[1:]
     return [sorted_similar, indexes_to_remove]
 
+
+# Методы подготовки датасетов
+
 def recommend_movies(df_1, recommend_object):
     df_1['kp_rating'] = df_1['kp_rating'].fillna(df_1['kp_rating'].mean()) 
 
     for feature in movies_features:
         df_1[feature] = df_1[feature].fillna('') #filling all NaNs with blank string
-    df_1['combined_features'] = df_1.apply(combine_features,args=(movies_features,),axis=1, )
+    df_1['combined_features'] = df_1.apply(combine_features,args=(movies_features,'description',),axis=1, )
 
     return create_recommend_list(df_1, recommend_object)
 
@@ -246,7 +250,6 @@ def recommend_games(df_1, recommend_object):
     for feature in games_features:
         df_1[feature] = df_1[feature].fillna('') #filling all NaNs with blank string
     df_1['combined_features'] = df_1.apply(combine_features, args=(games_features,),axis=1,)
-    print(df_1)
     return create_recommend_list(df_1, recommend_object)
 
 def recommend_books(df_1, recommend_object):
@@ -254,6 +257,6 @@ def recommend_books(df_1, recommend_object):
 
     for feature in books_features:
         df_1[feature] = df_1[feature].fillna('') #filling all NaNs with blank string
-    df_1['combined_features'] = df_1.apply(combine_features,args=(books_features,),axis=1)
+    df_1['combined_features'] = df_1.apply(combine_features,args=(books_features,'description',),axis=1)
     return create_recommend_list(df_1, recommend_object)
 >>>>>>> b95a42b (Реализованы простые рекомендации на основе разницы в указанных полях бд (фильм - фильм, игра - игра, книга - книга))
