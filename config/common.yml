@@ -24,6 +24,7 @@ defaults: &defaults
       urlId: 'https://steamcharts.com/top/p.'
       urlData: 'https://store.steampowered.com/api/appdetails'
     books:
+      openLibUrl: 'https://openlibrary.org/search.json'
       url: 'https://www.googleapis.com/books/v1/volumes'
 
   fillSettings:

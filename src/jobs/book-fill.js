@@ -26,7 +26,7 @@ async function savePopularBooks(pageNum) {
     const limitItemsForPage = config.fillSettings.books.limitItemsForPage;
     const currentIndex = pageNum;
     const fields = 'key,title,author_name,editions,editions.key,editions.title,editions.ebook_access,editions.language,editions.id_google'
-    const openLibraryUrl = 'https://openlibrary.org/search.json';
+    const openLibraryUrl = config.apiparams.books.openLibUrl;
 
     const response = await axios.get(openLibraryUrl, {
         params: {
