@@ -5,6 +5,7 @@
 http://localhost:3000/movies/ - можно чекнуть тестовый запрос к руту
 
 https://media-tracker-backend.onrender.com/movies/ - доступно из сети. При деплое в мастер обновляется
+https://recommendation-system-jm7m.onrender.comrecommend/simple - простые рекомендации. Обновляется при деплое в feature/python/simple_recommender
 
 Описание новых методов бека производится в формате Swagger OpenApi в файле: swagger-api/openapi.yaml. Это не сильно сложно.
 Так будет быстрее, потому что по этим файлам будет генерироваться код рутов и сервисов для express.

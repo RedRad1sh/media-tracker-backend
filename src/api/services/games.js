@@ -15,10 +15,16 @@ module.exports.getGames = async (options) => {
     const limit = options.size ? + options.size : 3;
     const offset = options.page ? options.page * limit : 0;
     const searchString = options.searchString;
+    const genres = options.genres.join("|");
+
+    let query = {title: {$regex: new RegExp(searchString.toLowerCase(), "i")}};
+    if (genres.length) {
+      query.genres = {$regex: new RegExp(genres.toLowerCase(), "i")};
+    }
 
     return {
       status: 200,
-      data: await Game.paginate({title: {$regex:  new RegExp(searchString.toLowerCase(), "i")}}, { offset, limit })
+      data: await Game.paginate(query, { offset, limit })
     };
   } catch (err) {
     log.error(err)
