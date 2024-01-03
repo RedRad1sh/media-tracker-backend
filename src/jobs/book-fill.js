@@ -38,9 +38,8 @@ async function savePopularBooks(pageNum) {
             sort: 'rating'
         },
     })
-    console.log(response)
     const titles = response.data.docs.map(doc => doc.editions.docs[0].title)
-    console.log(titles)
+    log.debug(`Будут загружены следующие книги: \n ${titles}`)
     for (const title of titles) {
         await saveBook(title, 1, 0);
     }
@@ -76,7 +75,6 @@ async function saveBook(search, limitItemsForPage, currentIndex) {
             orderBy: 'newest'
         },
     });
-    console.log(response.data)
     const responseData = response.data;
     if (responseData.items != null) {
         for (const item of responseData.items) {
