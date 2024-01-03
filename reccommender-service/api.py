@@ -37,7 +37,7 @@ def run_jobs():
         time.sleep(1)
 
 if __name__ == '__main__':
-    schedule.every(1).hours.do(updateJob) 
+    schedule.every(10).minutes.do(updateJob) 
     thread = Thread(target=run_jobs)
     thread.daemon = True
     thread.start()
