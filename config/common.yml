@@ -34,7 +34,7 @@ defaults: &defaults
     movies:
       cron: '0 */1 * * * *'
       limitItemsForPage: 50
-      isJobStart: true
+      isJobStart: false
     games:
       cron: '0 */1 * * * *'
       limitItemsForPage: 25
@@ -42,7 +42,7 @@ defaults: &defaults
     books:
       cron: '0 */1 * * * *'
       limitItemsForPage: 40
-      isJobStart: true
+      isJobStart: false
 
 development:
   <<: *defaults
