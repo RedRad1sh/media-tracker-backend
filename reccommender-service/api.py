@@ -17,17 +17,16 @@ def not_found(error):
 
 @app.route('/recommend/simple', methods=['POST'])
 def recommend_simple():
-    if not request.json or not 'reccommend_content_type' in request.json:
+    if not request.json or not 'recommendContentType' or not 'usingContentTypes' in request.json:
         abort(400)
     recommend_object = {
         'Movie': list(map(lambda x: x['content_id'], request.json.get('movieList', []))),
         'Game': list(map(lambda x: x['content_id'], request.json.get('gameList', []))),
         'Book': list(map(lambda x: x['content_id'], request.json.get('bookList', []))),
-        'content_types_for_recommend': request.json.get('content_types_for_recommend', []),
-        'reccommend_content_type': request.json.get('reccommend_content_type', "")
+        'using_content_types': request.json.get('usingContentTypes', []),
+        'recommend_content_type': request.json.get('recommendContentType', "")
     }
     result = recommend_content(recommend_object)
-    # print(pd.read_json(json.dumps(recommend_object['movies'])))
     return jsonify(result), 201
 
 def run_jobs():
