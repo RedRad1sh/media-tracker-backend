@@ -16,11 +16,29 @@ module.exports.getGames = async (options) => {
     const offset = options.page ? options.page * limit : 0;
     const searchString = options.searchString;
     const genres = options.genres.join("|");
+    const rate = options.rate;
+    const yearFrom = options.yearFrom;
+    const yearTo = options.yearTo;
 
     let query = {title: {$regex: new RegExp(searchString.toLowerCase(), "i")}};
     if (genres.length) {
       query.genres = {$regex: new RegExp(genres.toLowerCase(), "i")};
     }
+    if (rate) {
+      query.user_rating = {$gte: Number(rate), $lt: Number(rate) + 1};
+    }
+    if (yearFrom && yearTo) {
+      query.release_date = {$gte: new Date(options.yearFrom, 0, 1), $lte: new Date(options.yearTo, 0, 1)};
+    } else {
+      if (yearFrom) {
+        query.release_date = {$gte: new Date(options.yearFrom, 0, 1)};
+      }
+      if (yearTo) {
+        query.release_date = {$lte: new Date(options.yearTo, 0, 1)};
+      }
+    }
+
+    console.log(query)
 
     return {
       status: 200,

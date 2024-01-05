@@ -15,7 +15,10 @@ router.get('/', async (req, res, next) => {
     page: req.query['page'],
     size: req.query['size'],
     searchString: req.query['search']  ?? "",
-    genres: req.query['genres'] ?? []
+    genres: req.query['genres'] ?? [],
+    rate: req.query['rate'] ?? undefined,
+    yearFrom: req.query['yearFrom'] ?? undefined,
+    yearTo: req.query['yearTo'] ?? undefined
   };
 
   try {
