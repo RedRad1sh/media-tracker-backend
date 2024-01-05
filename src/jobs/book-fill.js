@@ -11,21 +11,16 @@ module.exports.initBooksCronJob = async () => {
     CronJob.from({
         cronTime: config.fillSettings.books.cron,
         onTick: async function () {
-            await fillContentDB('book', parseBookSites);
+            await fillContentDB('book', savePopularBooks);
         },
         start: config.fillSettings.books.isJobStart
     });
 }
 
-async function parseBookSites(pageNum) {
-    savePopularBooks(pageNum)
-    // saveNextBookInfo(pageNum)
-}
-
 async function savePopularBooks(pageNum) {
     const limitItemsForPage = config.fillSettings.books.limitItemsForPage;
     const currentIndex = pageNum;
-    const fields = 'key,title,author_name,editions,editions.key,editions.title,editions.ebook_access,editions.language,editions.id_google'
+    const fields = 'key,title,author_name,editions,editions.key,editions.title,editions.ebook_access,editions.language,editions.id_google,ratings_average'
     const openLibraryUrl = config.apiparams.books.openLibUrl;
 
     const response = await axios.get(openLibraryUrl, {
@@ -38,36 +33,20 @@ async function savePopularBooks(pageNum) {
             sort: 'rating'
         },
     })
-    const titles = response.data.docs.map(doc => doc.editions.docs[0].title)
-    log.debug(`Будут загружены следующие книги: \n ${titles}`)
-    for (const title of titles) {
-        await saveBook(title, 1, 0);
+    const docs = response.data.docs.map(doc => ({
+        title: doc.editions.docs[0].title,
+        rating: doc.ratings_average
+    }))
+    log.debug(`Будут загружены следующие книги: \n ${docs.map(doc => doc.title)}`)
+    for (const doc of docs) {
+        await saveBook(doc, 1, 0);
     }
 }
 
-/**
- * DEPRECATED - отдает рандом, не вижу смысла подключать обратно
- */
-async function saveNextBookInfo(pageNum) {
-    try {
-        const categories = ['Fiction', 'Science', 'History', 'Religion', 'Cooking', 'Travel', 'Biography', 'Poetry'];
-
-        const limitItemsForPage = config.fillSettings.books.limitItemsForPage;
-        const currentIndex = pageNum === 1 ? 0 : (pageNum - 1) * limitItemsForPage - 1;
-
-        for (const category of categories) {
-            await saveBook(`subject:${category}`, limitItemsForPage, currentIndex);
-        }
-    } catch (error) {
-        log.error('Произошла ошибка:', error);
-    }
-    log.info('Все запросы завершены');
-}
-
-async function saveBook(search, limitItemsForPage, currentIndex) {
+async function saveBook(doc, limitItemsForPage, currentIndex) {
     const response = await axios.get(config.apiparams.books.url, {
         params: {
-            q: search,
+            q: doc.title,
             langRestrict: 'ru',
             maxResults: limitItemsForPage,
             startIndex: currentIndex,
@@ -79,6 +58,7 @@ async function saveBook(search, limitItemsForPage, currentIndex) {
     if (responseData.items != null) {
         for (const item of responseData.items) {
             if (responseData.items && item.id) {
+                console.log(doc.rating)
                 let book = new Book({
                     google_id: item.id,
                     const_content_id: item.id,
@@ -94,6 +74,7 @@ async function saveBook(search, limitItemsForPage, currentIndex) {
                     categories: item.volumeInfo.categories ? item.volumeInfo.categories.join(',') : null,
                     categories_ru: mapCategoriesBook((item.volumeInfo.categories || [''])[0]),
                     user_rating: null,
+                    openlib_rating: doc.rating || null
                 });
 
                 try {
@@ -113,6 +94,7 @@ function mapCategoriesBook(categories) {
     const categoryMappings = {
         'Fiction': 'Художественная литература',
         'English fiction': 'Художественная литература',
+        'Young Adult Fiction': 'Художественная литература',
         'Science': 'Наука',
         'Social Science': 'Наука',
         'Political Science': 'Наука',

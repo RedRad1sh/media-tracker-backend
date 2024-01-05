@@ -24,7 +24,7 @@ module.exports.getBooks = async (options) => {
 
         return {
             status: 200,
-            data: await Book.paginate(query, { offset, limit })
+            data: await Book.paginate(query, { offset: offset, limit: limit, sort: { openlib_rating : "desc"}})
         };
     } catch (err) {
         log.error(err)
