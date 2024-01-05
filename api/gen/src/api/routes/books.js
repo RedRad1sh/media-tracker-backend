@@ -11,6 +11,7 @@ function injectService(service) {
  * Получение списка книг
  */
 router.get('/', async (req, res, next) => {
+  // ЭТО ОБЪХЕКТ
   const options = {
     page: req.query['page'],
     size: req.query['size'],
