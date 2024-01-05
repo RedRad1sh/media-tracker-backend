@@ -37,7 +37,7 @@ def recommend_content(recommend_object):
     content_types_for_recommend = recommend_object['using_content_types']
     concatenated_user_lists = reduce(lambda x, y: recommend_object[x] + recommend_object[y], content_types_for_recommend) if len(content_types_for_recommend) > 1 else recommend_object[content_types_for_recommend[0]]
     user_lists_df = pd.read_json(json.dumps(concatenated_user_lists))
-    
+    print(recommend_object)
     if (len(content_types_for_recommend) == 1):
         prepare_df_func[content_types_for_recommend[0]](user_lists_df)
     else:
