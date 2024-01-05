@@ -93,3 +93,28 @@ async function validateListRecord(userList, requestBody) {
     }
 }
 
+/**
+ * @param {Object} options
+ * @throws {Error}
+ * @return {Promise}
+ */
+module.exports.removeElementFromUserList = async (options) => {
+    try {
+        log.debug(`Удаление из списков пользователя: ${options.userId}`);
+        let userId = options.userId;
+        let contentId = options.contentId;
+        
+        await UserList.deleteOne({ user_id: userId , content_id: contentId });
+        log.debug(`Контент contentId: ${contentId} удален из списка пользователя userId: ${userId}`);
+
+        return {
+            status: 200,
+            data: `Контент contentId: ${contentId} удален из списка пользователя userId: ${userId}`,
+        };
+
+    } catch (err) {
+        log.error(err)
+        throw err
+    }
+};
+
