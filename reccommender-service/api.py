@@ -26,6 +26,7 @@ def recommend_simple():
         'using_content_types': request.json.get('usingContentTypes', []),
         'recommend_content_type': request.json.get('recommendContentType', "")
     }
+    print(recommend_object)
     result = recommend_content(recommend_object)
     return jsonify(result), 201
 
