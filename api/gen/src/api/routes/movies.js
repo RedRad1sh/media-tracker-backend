@@ -13,6 +13,7 @@ function injectService(service) {
  */
 router.get('/', async (req, res, next) => {
   const options = {
+    userId: req.query['user_id'],
     page: req.query['page'],
     size: req.query['size'],
     searchString: req.query['search'] ?? "",
@@ -20,7 +21,8 @@ router.get('/', async (req, res, next) => {
     rate: req.query['rate'] ?? undefined,
     yearFrom: req.query['yearFrom'] ?? undefined,
     yearTo: req.query['yearTo'] ?? undefined,
-    durations: req.query['durations'] ?? undefined
+    durations: req.query['durations'] ?? undefined,
+    selectedLists: req.query['selectedLists'] ?? undefined
   };
 
   try {

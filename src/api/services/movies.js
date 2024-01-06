@@ -1,4 +1,5 @@
 const Movie = require("../../model/Movie");
+const UserLists = require("../../model/user/UserList");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const log = logger(config.logger);
@@ -12,6 +13,7 @@ module.exports.getMovies = async (options) => {
   try {
     log.debug(`Параметры пагинации, page: ${options.page} и size: ${options.size}`);
   
+    const userId = options.userId;
     const limit = options.size ? + options.size : 3;
     const offset = options.page ? options.page * limit : 0;
     const searchString = options.searchString;
@@ -20,6 +22,7 @@ module.exports.getMovies = async (options) => {
     const yearFrom = options.yearFrom;
     const yearTo = options.yearTo;
     const durations = options.durations;
+    const selectedLists = options.selectedLists;
 
     let query = {title: {$regex: new RegExp(searchString.toLowerCase(), "i")}};
     if (genres.length) {
@@ -58,6 +61,13 @@ module.exports.getMovies = async (options) => {
       }
 
       query.$or = durationQueries;
+    }
+
+    if (selectedLists !== undefined && selectedLists.length > 0 && userId) {
+      const listsQuery = {user_id: userId, content_type: "Movie", action: {$in: selectedLists}};
+      const contentIds = await UserLists.find(listsQuery).select({content_id: 1, _id: 0});
+      const moviesIds = contentIds.map(el => el.content_id);
+      query.const_content_id = {$in: moviesIds};
     }
 
     return {

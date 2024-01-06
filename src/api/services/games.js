@@ -1,6 +1,7 @@
 const Game = require("../../model/Game");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
+const UserLists = require("../../model/user/UserList");
 const log = logger(config.logger);
 
 /**
@@ -12,6 +13,7 @@ module.exports.getGames = async (options) => {
   try {
     log.debug(`Параметры пагинации, page: ${options.page} и size: ${options.size}`)
 
+    const userId = options.userId;
     const limit = options.size ? + options.size : 3;
     const offset = options.page ? options.page * limit : 0;
     const searchString = options.searchString;
@@ -19,6 +21,7 @@ module.exports.getGames = async (options) => {
     const rate = options.rate;
     const yearFrom = options.yearFrom;
     const yearTo = options.yearTo;
+    const selectedLists = options.selectedLists;
 
     let query = {title: {$regex: new RegExp(searchString.toLowerCase(), "i")}};
     if (genres.length) {
@@ -38,7 +41,12 @@ module.exports.getGames = async (options) => {
       }
     }
 
-    console.log(query)
+    if (selectedLists !== undefined && selectedLists.length > 0 && userId) {
+      const listsQuery = {user_id: userId, content_type: "Game", action: {$in: selectedLists}};
+      const contentIds = await UserLists.find(listsQuery).select({content_id: 1, _id: 0});
+      const gameIds = contentIds.map(el => el.content_id);
+      query.const_content_id = {$in: gameIds};
+    }
 
     return {
       status: 200,
