@@ -2,6 +2,7 @@ const Game = require("../../model/Game");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const UserLists = require("../../model/user/UserList");
+const UserReviews = require("./user-reviews");
 const log = logger(config.logger);
 
 /**
@@ -67,9 +68,13 @@ module.exports.getGames = async (options) => {
 module.exports.getGameById = async (options) => {
   try {
     let gameId = options.id;
+    let avgRating = await UserReviews.calculateRating(gameId, 'Game');
+
+    let game = await Game.findOne({ const_content_id: gameId});
+
     return {
       status: 200,
-      data: await Game.findOne({ const_content_id: gameId })
+      data: {game : game, rating : avgRating}
     };
   } catch (err) {
     log.error(err)
