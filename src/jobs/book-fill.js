@@ -116,15 +116,19 @@ function mapCategoriesBook(categories) {
         'Education': 'Образование',
         'Study Aids': 'Образование',
         'Foreign Language Study': 'Образование',
+        'Literary Criticism': 'Образование',
         'Comics & Graphic Novels': 'Комиксы и графические новеллы',
         'Body, Mind & Spirit': 'Здоровье и разум',
+        'Health & Fitness': 'Здоровье и разум',
         'Business & Economics': 'Экономика',
         'Self-Help': 'Психология',
         'Medical': 'Медицина',
         'Architecture': 'Архитектура',
-        'Art': 'Искусство'
+        'Art': 'Искусство',
+        'Law': 'Закон',
+        'Literary Collections':'Литературный сборник'
     };
 
     const mappedCategory = categoryMappings[categories];
-    return mappedCategory || categories;
+    return mappedCategory || 'Прочее';
 }

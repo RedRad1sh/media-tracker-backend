@@ -30,18 +30,19 @@ def recommend_content(recommend_object):
         "Game": prepare_games_df,
         "Book": prepre_books_df
     }
+        
     
     reccommend_content_type = recommend_object['recommend_content_type']
     df_1 = load_df(reccommend_content_type)
     prepare_df_func[reccommend_content_type](df_1)
     content_types_for_recommend = recommend_object['using_content_types']
-    concatenated_user_lists = reduce(lambda x, y: recommend_object[x] + recommend_object[y], content_types_for_recommend) if len(content_types_for_recommend) > 1 else recommend_object[content_types_for_recommend[0]]
+    concatenated_user_lists = sum(map(lambda x: recommend_object[x], content_types_for_recommend), [])
+    
     user_lists_df = pd.read_json(json.dumps(concatenated_user_lists))
-    print(recommend_object)
     if (len(content_types_for_recommend) == 1):
         prepare_df_func[content_types_for_recommend[0]](user_lists_df)
     else:
-        concatenated_features = reduce(lambda x, y: features[x] + features[y], content_types_for_recommend) if len(content_types_for_recommend) > 1 else features[content_types_for_recommend[0]]
+        concatenated_features = sum(map(lambda x: features[x], content_types_for_recommend), [])
         prepare_combined_features(user_lists_df, concatenated_features)
     
     print(user_lists_df['combined_features'][0]) 
