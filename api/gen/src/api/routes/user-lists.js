@@ -65,39 +65,4 @@ router.get('/user/:userId/reccomendations', async (req, res, next) => {
     }
 });
 
-router.get('/user/:userId/reccomendations', async (req, res, next) => {
-    const options = {
-        userId: req.params['userId'],
-        recommendContentType: req.query['recommendContentType'],
-        usingContentTypes: req.query['usingContentTypes'].split(',')
-    };
-
-    try {
-        const result = await userLists.reccommend(options);
-        res.status(result.status || 200).send(result.data);
-    } catch (err) {
-        next(err);
-    }
-});
-
-/**
- * Удаление элемента из списка контента
- */
-router.delete('/user/:userId/content/:contentId', async (req, res, next) => {
-    const options = {
-      userId: req.params['userId'],
-      contentId: req.params['contentId'],
-    };
-  
-    try {
-      const result = await  userLists.removeElementFromUserList(options);
-      res.status(result.status || 200).send(result.data);
-    } catch (err) {
-      return res.status(500).send({
-        status: 500,
-        error: 'Server Error'
-      });
-    }
-  });
-
 module.exports = { router, injectService };
