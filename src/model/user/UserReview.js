@@ -9,8 +9,8 @@ const UserReview = new Schema({
     },
     content_type: {type: String, unique: false, required: true},
     content_id: {type: String, unique: false, required: true},
-    rating: {type: Number, unique: false, required: true},
-    review_message: {type: String, unique: false, required: true}
+    rating: {type: Number, unique: false, required: false},
+    review_message: {type: String, unique: false, required: false}
 })
 UserReview.index({ user_id: 1, content_id: 1}, { unique: true });
 UserReview.plugin(mongoosePaginate);

@@ -8,6 +8,7 @@ const gamesRoute = require('../../api/gen/src/api/routes/games')
 const booksRoute = require('../../api/gen/src/api/routes/books')
 const userListsRoute = require('../../api/gen/src/api/routes/user-lists')
 const usersRoute = require('../../api/gen/src/api/routes/users')
+const userReviewsRoute = require('../../api/gen/src/api/routes/user-review')
 
 const log = logger(config.logger);
 const app = express();
@@ -35,6 +36,9 @@ app.use('/users', usersRoute.router);
 
 userListsRoute.injectService(require('./services/user-lists'));
 app.use('/lists', userListsRoute.router);
+
+userReviewsRoute.injectService(require('./services/user-reviews'));
+app.use('/reviews', userReviewsRoute.router);
 
 // catch 404
 app.use((req, res, next) => {
