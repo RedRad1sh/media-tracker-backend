@@ -2,6 +2,9 @@ defaults: &defaults
   api:
     port: 3000
 
+  recommenderService:
+    url: http://localhost:5000/
+
   mongo:
     url: "mongodb+srv://fakemailforregister:FEdvdL4Leml4Wpin@madiatracker.sabzsmo.mongodb.net/?retryWrites=true&w=majority"
 
@@ -46,6 +49,9 @@ development:
 
 production:
   <<: *defaults
+
+  recommenderService:
+    url: https://recommendation-system-jm7m.onrender.com/
 
   logger:
     name: media-tracker

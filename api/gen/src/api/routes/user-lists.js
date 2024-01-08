@@ -50,6 +50,21 @@ router.get('/user/:userId', async (req, res, next) => {
     }
 });
 
+router.get('/user/:userId/reccomendations', async (req, res, next) => {
+    const options = {
+        userId: req.params['userId'],
+        recommendContentType: req.query['recommendContentType'],
+        usingContentTypes: req.query['usingContentTypes'].split(',')
+    };
+
+    try {
+        const result = await userLists.reccommend(options);
+        res.status(result.status || 200).send(result.data);
+    } catch (err) {
+        next(err);
+    }
+});
+
 /**
  * Удаление элемента из списка контента
  */

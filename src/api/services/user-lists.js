@@ -7,7 +7,15 @@ const Movie = require("../../model/Movie");
 const Game = require("../../model/Game");
 const Book = require("../../model/Book");
 const schemas = { Movie: Movie, Game: Game, Book: Book }
+const axios = require('axios');
+const util = require('util');
 
+
+const mapTypeToCollection = {
+    'Movie': Movie,
+    'Game': Game,
+    'Book': Book
+}
 
 /**
  * @param {Object} options
@@ -54,7 +62,7 @@ module.exports.getByUserId = async (options) => {
         let userLists = await Promise.all((await user.populate('userLists')).userLists
             .map(async item => fillContentJson(item.content_type, item)))
 
-        log.debug(`Найдены списки ${userLists}`)
+        log.silly(`Найдены списки ${userLists}`)
 
         let movieList = userLists
             .filter(item => item.content_type === 'Movie')
@@ -71,6 +79,41 @@ module.exports.getByUserId = async (options) => {
                 bookList: bookList
             }
 
+        };
+    } catch (err) {
+        log.error(err)
+        throw err
+    }
+};
+
+
+/**
+ * @param {Object} options
+ * @throws {Error}
+ * @return {Promise}
+ */
+module.exports.reccommend = async (options) => {
+    try {
+        log.debug(`Формирование рекомендаций: ${options.userId}`);
+        const userLists = (await module.exports.getByUserId(options)).data
+
+        const recommendServiceUrl = `${config.recommenderService.url}/recommend/simple`;
+        const requestBody = Object.assign(userLists, {
+            recommendContentType: options.recommendContentType,
+            usingContentTypes: options.usingContentTypes
+        })
+        log.http(`Запрос в сервис рекомендаций: ${util.inspect(requestBody)}, URL: ${recommendServiceUrl}`);
+
+        const response = await axios.post(recommendServiceUrl, requestBody)
+        const contentArray = await mapTypeToCollection[options.recommendContentType].find({ 'const_content_id': { $in: response.data.ids } })
+        log.debug(`Сформированы рекомендации с id: ${response.data.ids}`)
+
+        return {
+            status: 200,
+            data: {
+                contentType: options.recommendContentType,
+                contentArray: contentArray
+            }
         };
     } catch (err) {
         log.error(err)
