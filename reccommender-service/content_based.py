@@ -15,7 +15,7 @@ import json
 features = {
     'Movie': ['actors','genres','genres','directors'],
     'Game': ['developers', 'genres', 'genres'],
-    'Book': ['title','categories','categories_ru','authors']
+    'Book': ['title','categories_ru','authors']
 }
 
 content_type_to_plural = {
