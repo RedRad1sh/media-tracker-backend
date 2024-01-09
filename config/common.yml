@@ -44,6 +44,9 @@ defaults: &defaults
       limitItemsForPage: 40
       isJobStart: false
 
+  secret:
+    key: "SECRET_KEY"
+
 development:
   <<: *defaults
 
