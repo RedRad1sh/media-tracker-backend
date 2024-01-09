@@ -7,7 +7,6 @@ function injectService(service) {
   movies = service;
 }
 
-
 /**
  * Получение списка фильмов
  */

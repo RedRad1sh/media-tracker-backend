@@ -10,7 +10,6 @@ const schemas = { Movie: Movie, Game: Game, Book: Book }
 const axios = require('axios');
 const util = require('util');
 
-
 const mapTypeToCollection = {
     'Movie': Movie,
     'Game': Game,

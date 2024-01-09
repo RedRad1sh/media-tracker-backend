@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require("passport");
 let reviews = null;
 
 const router = new express.Router();
@@ -11,7 +12,7 @@ function injectService(service) {
 /**
  * Создание нового отзыва
  */
-router.post('/', async (req, res, next) => {
+router.post('/', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
   const options = {
     requestBody: req.body
   };
@@ -46,7 +47,7 @@ router.get('/:id', async (req, res, next) => {
 /**
  * Удаление отзыва по ID
  */
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
   const options = {
     id: req.params['id']
   };
@@ -90,7 +91,7 @@ router.get('/content/:contentType/:contentId', async (req, res, next) => {
 /**
  * Получение списка отзывов для пользователя
  */
-router.get('/user/:userId', async (req, res, next) => {
+router.get('/user/:userId', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
   const options = {
     userId: req.params['userId']
   };
@@ -104,6 +105,3 @@ router.get('/user/:userId', async (req, res, next) => {
 });
 
 module.exports = { router, injectService };
-
-
-module.exports = {router, injectService};
