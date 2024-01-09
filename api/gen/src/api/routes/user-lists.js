@@ -19,7 +19,7 @@ function injectService(service) {
  * @param {String} action - String (строка Запланировано, Просмотрено и т.п.)
  * 
  */
-router.put('/', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
+router.put('/', async (req, res, next) => {
     const options = {
         requestBody: req.body
     };
@@ -38,7 +38,7 @@ router.put('/', passport.authenticate('jwt', {session: false}), async (req, res,
 /**
  * Получение списков контента пользователя
  */
-router.get('/user/:userId', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
+router.get('/user/:userId', async (req, res, next) => {
     const options = {
         userId: req.params['userId']
     };
@@ -51,7 +51,7 @@ router.get('/user/:userId', passport.authenticate('jwt', {session: false}), asyn
     }
 });
 
-router.get('/user/:userId/reccomendations', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
+router.get('/user/:userId/reccomendations', async (req, res, next) => {
     const options = {
         userId: req.params['userId'],
         recommendContentType: req.query['recommendContentType'],
@@ -69,7 +69,7 @@ router.get('/user/:userId/reccomendations', passport.authenticate('jwt', {sessio
 /**
  * Удаление элемента из списка контента
  */
-router.delete('/user/:userId/content/:contentId', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
+router.delete('/user/:userId/content/:contentId', async (req, res, next) => {
     const options = {
       userId: req.params['userId'],
       contentId: req.params['contentId'],
