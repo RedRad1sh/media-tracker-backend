@@ -53,6 +53,10 @@ module.exports.getStats = async (options) => {
             
             allContentStats.count[index]++;
         }
+
+        if (allContentStats.count.every(value => value === 0)) {
+            allContentStats.count = [];
+        }
         
         let movieStats = getStatsForObject(userLists, 'Movie', ['Запланировано', 'Смотрю', 'Просмотрено'], ', ');
         let gameStats = getStatsForObject(userLists, 'Game', ['Запланировано', 'Прохожу', 'Пройдено'], ',');
