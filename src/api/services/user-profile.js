@@ -84,11 +84,11 @@ function getStatsForObject (userLists, contentType, actions, delimiter) {
 
     let objectList = userLists.filter(item => item.content_type === contentType)
 
-    let objectStats = {
-        planningGenres: { genres: [], count: [] },
-        watchingGenres: { genres: [], count: [] },
-        watchedGenres:  { genres: [], count: [] }
-    };
+    let objectStats = [
+       { planningGenres: { actions: actions[0], genres: [], count: [] } },
+       { watchingGenres: { actions: actions[1], genres: [], count: [] } },
+       { watchedGenres:  { actions: actions[2], genres: [], count: [] } }
+    ];
 
     for (let obj of objectList) {
         let action = obj.action;
@@ -101,9 +101,9 @@ function getStatsForObject (userLists, contentType, actions, delimiter) {
             genres = [obj.content_id.categories_ru];
         }
            
-        let actionGenres = (action === actions[0]) ? objectStats.planningGenres :
-                           (action === actions[1]) ? objectStats.watchingGenres :
-                           (action === actions[2]) ? objectStats.watchedGenres : null;
+        let actionGenres = (action === actions[0]) ? objectStats[0].planningGenres :
+                           (action === actions[1]) ? objectStats[1].watchingGenres :
+                           (action === actions[2]) ? objectStats[2].watchedGenres : null;
           
         if (actionGenres) {
             for (let genre of genres) {
