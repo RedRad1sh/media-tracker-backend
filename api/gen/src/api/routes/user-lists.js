@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 let userLists = null;
 
 const router = new express.Router();
@@ -44,6 +45,21 @@ router.get('/user/:userId', async (req, res, next) => {
 
     try {
         const result = await userLists.getByUserId(options);
+        res.status(result.status || 200).send(result.data);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/user/:userId/reccomendations', async (req, res, next) => {
+    const options = {
+        userId: req.params['userId'],
+        recommendContentType: req.query['recommendContentType'],
+        usingContentTypes: req.query['usingContentTypes'].split(',')
+    };
+
+    try {
+        const result = await userLists.reccommend(options);
         res.status(result.status || 200).send(result.data);
     } catch (err) {
         next(err);

@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require("passport");
 let reviews = null;
 
 const router = new express.Router();
@@ -104,6 +105,3 @@ router.get('/user/:userId', async (req, res, next) => {
 });
 
 module.exports = { router, injectService };
-
-
-module.exports = {router, injectService};

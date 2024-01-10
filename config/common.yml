@@ -2,6 +2,9 @@ defaults: &defaults
   api:
     port: 3000
 
+  recommenderService:
+    url: http://localhost:5000/
+
   mongo:
     url: "mongodb+srv://fakemailforregister:FEdvdL4Leml4Wpin@madiatracker.sabzsmo.mongodb.net/?retryWrites=true&w=majority"
 
@@ -24,6 +27,7 @@ defaults: &defaults
       urlId: 'https://steamcharts.com/top/p.'
       urlData: 'https://store.steampowered.com/api/appdetails'
     books:
+      openLibUrl: 'https://openlibrary.org/search.json'
       url: 'https://www.googleapis.com/books/v1/volumes'
 
   fillSettings:
@@ -40,11 +44,17 @@ defaults: &defaults
       limitItemsForPage: 40
       isJobStart: false
 
+  secret:
+    key: "SECRET_KEY"
+
 development:
   <<: *defaults
 
 production:
   <<: *defaults
+
+  recommenderService:
+    url: https://recommendation-system-jm7m.onrender.com/
 
   logger:
     name: media-tracker

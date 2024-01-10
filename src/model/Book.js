@@ -13,7 +13,8 @@ const Book = new Schema({
     page_count: {type: Number, unique: false, required: false},
     categories: {type: String, unique: false, required: true},
     categories_ru: {type: String, unique: false, required: false},
-    user_rating: {type: Number, unique: false, required: false}
+    user_rating: {type: Number, unique: false, required: false},
+    openlib_rating: {type: Number, unique: false, required: false},
 })
 Book.plugin(mongoosePaginate);
 

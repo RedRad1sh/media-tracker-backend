@@ -1,6 +1,8 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const passport = require('passport');
 const config = require('../lib/config');
 const logger = require('../lib/logger');
 const moviesRoute = require('../../api/gen/src/api/routes/movies')
@@ -18,11 +20,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
+
+app.use(session({
+  secret: config.secret.key,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}))
+app.use(passport.initialize());
+app.use(passport.session());
+require('../lib/passport')(passport);
+
 /*
  * Routes
  */
-
-// В сервисе вся бизнес логика - обращение к БД и т.п.
 moviesRoute.injectService(require('./services/movies'));
 app.use('/movies', moviesRoute.router);
 gamesRoute.injectService(require('./services/games'));
