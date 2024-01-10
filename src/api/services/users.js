@@ -37,11 +37,16 @@ module.exports.createUser = async (options) => {
   try {
     log.debug(`Создание пользователя, параметры: ${options.requestBody}`);
     let userRequest = options.requestBody;
+
+    let imgUrl = userRequest.imgUrl
+        ? userRequest.imgUrl
+        : "https://gas-kvas.com/uploads/posts/2023-02/1675292098_gas-kvas-com-p-lenin-risunok-art-39.png";
+
     let user = new User({
         login: userRequest.login,
         password: md5(userRequest.password),
         email: userRequest.email,
-        img_url: userRequest.imgUrl,
+        img_url: imgUrl,
         registration_date: new Date()
     })
 
