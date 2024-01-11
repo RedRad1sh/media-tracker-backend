@@ -7,3 +7,4 @@ pyaml>=23.9
 gunicorn==21.2.0
 multi_rake==0.0.2
 schedule>=1.2
+gevent>=1.4
