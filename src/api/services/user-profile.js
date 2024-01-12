@@ -58,9 +58,9 @@ module.exports.getStats = async (options) => {
             allContentStats.count = [];
         }
         
-        let movieStats = getStatsForObject(userLists, 'Movie', ['Запланировано', 'Смотрю', 'Просмотрено'], ', ');
-        let gameStats = getStatsForObject(userLists, 'Game', ['Запланировано', 'Прохожу', 'Пройдено'], ',');
-        let bookStats = getStatsForObject(userLists, 'Book', ['Запланировано', 'Читаю', 'Прочитано'], null);
+        let movieStats = getStatsForObject(userLists, 'Movie', ['Запланировано', 'Смотрю', 'Просмотрено', 'Брошено'], ', ');
+        let gameStats = getStatsForObject(userLists, 'Game', ['Запланировано', 'Играю', 'Пройдено', 'Брошено'], ',');
+        let bookStats = getStatsForObject(userLists, 'Book', ['Запланировано', 'Читаю', 'Прочитано', 'Брошено'], null);
         
         log.debug(`Статистика для пользователя  ${options.userId} собрана`);
         return {
