@@ -60,7 +60,7 @@ module.exports.getByUserId = async (options) => {
         let user = await User.findById(userId);
         let userLists = await Promise.all((await user.populate('userLists')).userLists
             .map(async item => fillContentJson(item.content_type, item)))
-
+            
         log.silly(`Найдены списки ${userLists}`)
 
         let movieList = userLists
@@ -146,7 +146,12 @@ module.exports.removeElementFromUserList = async (options) => {
         let userId = options.userId;
         let contentId = options.contentId;
         
-        await UserList.deleteOne({ user_id: userId , content_id: contentId });
+        let deletedUserList = await UserList.findOneAndDelete({ user_id: userId, content_id: contentId });
+
+        if (deletedUserList) {
+          await User.findByIdAndUpdate({_id: userId}, { '$pull': { userLists: deletedUserList._id } });
+        }
+
         log.debug(`Контент contentId: ${contentId} удален из списка пользователя userId: ${userId}`);
 
         return {
