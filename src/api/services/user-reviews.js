@@ -108,10 +108,6 @@ module.exports.getUserReviews = async (options) => {
  * @throws {Error}
  * @return {Promise}
  */
-
-/*
-* Слева бд - Справа значение, которое должно быть
-* */
 module.exports.updateRating = async (options) => {
     try {
         log.debug(`Обновление оценки контента (пользователь, тип контента, идентификатор контента):
@@ -166,8 +162,42 @@ module.exports.calculateRating = async (content_id, content_type) => {
 
         let avgRating = null;
 
-        if (arrayRating) {
+        if (arrayRating.length) {
             avgRating = arrayRating.reduce((p, c) => p + c, 0) / arrayRating.length
+
+            switch (content_type) {
+                case "Book":``
+                    await Book.findOneAndUpdate(
+                        { const_content_id: content_id},
+                        { user_rating: avgRating },
+                        {
+                            new: true,
+                            upsert: true
+                        }
+                    )
+                    break;
+                case "Movie":
+                    await Movie.findOneAndUpdate(
+                        { const_content_id: content_id},
+                        { user_rating: avgRating },
+                        {
+                            new: true,
+                            upsert: true
+                        }
+                    )
+                    break;
+                case "Game":
+                    await Game.findOneAndUpdate(
+                        { const_content_id: content_id},
+                        { user_rating: avgRating },
+                        {
+                            new: true,
+                            upsert: true
+                        }
+                    )
+                    break;
+            }
+
         }
 
         return avgRating;
