@@ -2,6 +2,7 @@ const Book = require("../../model/Book");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const UserLists = require("../../model/user/UserList");
+const UserReviews = require("../../api/services/user-reviews");
 const log = logger(config.logger);
 
 /**
@@ -82,16 +83,20 @@ module.exports.getBooks = async (options) => {
 
 /**
  * @param {Object} options
- * @param {Number} options.id ID игры
+ * @param {Number} options.id ID книги
  * @throws {Error}
  * @return {Promise}
  */
 module.exports.getBookById = async (options) => {
     try {
         let bookId = options.id;
+        let avgRating = await UserReviews.calculateRating(bookId, 'Book');
+
+        let book = await Book.findOne({ const_content_id: bookId});
+
         return {
           status: 200,
-          data: await Book.findOne({ const_content_id: bookId })
+          data: {book : book, rating : avgRating}
         };
       } catch (err) {
         log.error(err)
