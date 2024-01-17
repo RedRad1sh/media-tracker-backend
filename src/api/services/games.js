@@ -68,13 +68,21 @@ module.exports.getGames = async (options) => {
 module.exports.getGameById = async (options) => {
   try {
     let gameId = options.id;
-    let avgRating = await UserReviews.calculateRating(gameId, 'Game');
+    let userId = options.userId;
 
+    let avgRating = await UserReviews.calculateRating(gameId, 'Game');
     let game = await Game.findOne({ const_content_id: gameId});
+
+    let userLists = await UserLists.find({ user_id: userId, content_type: 'Game', content_id: game.const_content_id});
+    let contenInfoUser  = userLists.filter(item => item.content_id === game.const_content_id)[0];
+
+    if(!contenInfoUser){
+      contenInfoUser = { content_id: game.const_content_id, action: '-' };
+    }
 
     return {
       status: 200,
-      data: {game : game, rating : avgRating}
+      data: {game : game, rating : avgRating, userList: contenInfoUser}
     };
   } catch (err) {
     log.error(err)

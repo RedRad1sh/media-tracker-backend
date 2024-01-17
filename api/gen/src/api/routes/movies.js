@@ -43,9 +43,10 @@ router.get('/', async (req, res, next) => {
 /**
  * Получение информации о фильме по ID
  */
-router.get('/movie/:id', async (req, res, next) => {
+router.get('/movie/:id/:userId', async (req, res, next) => {
   const options = {
-    id: req.params['id']
+    id: req.params['id'],
+    userId: req.params['userId'],
   };
 
   try {

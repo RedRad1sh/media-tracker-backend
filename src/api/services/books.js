@@ -90,13 +90,21 @@ module.exports.getBooks = async (options) => {
 module.exports.getBookById = async (options) => {
     try {
         let bookId = options.id;
+        let userId = options.userId;
+
         let avgRating = await UserReviews.calculateRating(bookId, 'Book');
 
         let book = await Book.findOne({ const_content_id: bookId});
+        let userLists = await UserLists.find({ user_id: userId, content_type: 'Book', content_id: book.const_content_id});
+        let contenInfoUser  = userLists.filter(item => item.content_id === book.const_content_id)[0];
+    
+        if(!contenInfoUser){
+          contenInfoUser = { content_id: book.const_content_id, action: '-' };
+        }
 
         return {
           status: 200,
-          data: {book : book, rating : avgRating}
+          data: {book : book, rating : avgRating, userList: contenInfoUser}
         };
       } catch (err) {
         log.error(err)
