@@ -94,13 +94,21 @@ module.exports.getMovies = async (options) => {
 module.exports.getMovieById = async (options) => {
   try {
     let movieId = options.id;
-    let avgRating = await UserReviews.calculateRating(movieId, 'Movie');
+    let userId = options.userId;
 
+    let avgRating = await UserReviews.calculateRating(movieId, 'Movie');
     let movie = await Movie.findOne({ const_content_id: movieId});
+    let userLists = await UserLists.find({ user_id: userId, content_type: 'Movie', content_id: movie.const_content_id});
+    let contenInfoUser  = userLists.filter(item => item.content_id === movie.const_content_id)[0];
+
+
+    if(!contenInfoUser){
+      contenInfoUser = { content_id: movie.const_content_id, action: '-' };
+    }
 
     return {
       status: 200,
-      data: {movie : movie, rating : avgRating}
+      data: {movie : movie, rating : avgRating, userList: contenInfoUser}
     };
 
   } catch (err) {

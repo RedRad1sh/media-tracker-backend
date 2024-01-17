@@ -43,9 +43,10 @@ router.get('/', async (req, res, next) => {
 /**
  * Получение информации о книге по ID
  */
-router.get('/book/:id', async (req, res, next) => {
+router.get('/book/:id/:userId', async (req, res, next) => {
   const options = {
-    id: req.params['id']
+    id: req.params['id'],
+    userId: req.params['userId'],
   };
 
   try {

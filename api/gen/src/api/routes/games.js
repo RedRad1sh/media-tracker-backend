@@ -42,9 +42,10 @@ router.get('/', async (req, res, next) => {
 /**
  * Получение информации о игре по ID
  */
-router.get('/game/:id', async (req, res, next) => {
+router.get('/game/:id/:userId', async (req, res, next) => {
   const options = {
-    id: req.params['id']
+    id: req.params['id'],
+    userId: req.params['userId'],
   };
 
   try {
