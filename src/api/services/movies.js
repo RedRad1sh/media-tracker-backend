@@ -3,6 +3,10 @@ const UserLists = require("../../model/user/UserList");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const log = logger(config.logger);
+const User = require("../../model/user/User");
+const Game = require("../../model/Game");
+const Book = require("../../model/Book");
+const schemas = { Movie: Movie, Game: Game, Book: Book }
 
 /**
  * @param {Object} options
@@ -89,15 +93,34 @@ module.exports.getMovies = async (options) => {
 module.exports.getMovieById = async (options) => {
   try {
     let movieId = options.id;
+    let userId = options.userId;
+
+    let contenInfo = await Movie.findOne({ const_content_id: movieId});
+    let userLists = await UserLists.find({ user_id: userId, content_type: 'Movie', content_id: contenInfo.const_content_id});
+    
+    let contenInfoUser = { ...contenInfo.toObject() };
+
+    if(userLists){
+      contenInfoUser.userListsInfo = userLists.filter(item => item.content_id === contenInfo.const_content_id);
+    }
     return {
       status: 200,
-      data: await Movie.findOne({ const_content_id: movieId })
+      data: contenInfoUser
     };
+
   } catch (err) {
     log.error(err)
     throw err
   }
 };
+
+
+async function fillContentJson(content_type, userList) {
+  const id = (await schemas[content_type]
+      .findOne({ 'const_content_id': userList.content_id }))._id;
+  userList.content_id = id;
+  return await userList.populate('content_id', null, content_type);
+}
 
 /**
  * @throws {Error}
