@@ -121,16 +121,31 @@ module.exports.updateRating = async (options) => {
             content_id: userRequest.content_id
         })
 
-        if (userReview) {
-            userReview.rating = userRequest.rating
+        if (isNaN(userRequest.rating)) {
+            if (userRequest.review_message == null || userRequest.review_message === '') {
+                await UserReview.findOneAndDelete({
+                    _id: userReview._id
+                })
+
+                return {
+                    status: 200,
+                    data: {}
+                };
+            } else {
+                userReview.rating = null
+            }
         } else {
-            userReview = new UserReview({
-                user_id: userRequest.user_id,
-                content_type: userRequest.content_type,
-                content_id: userRequest.content_id,
-                rating: userRequest.rating,
-                review_message: null
-            });
+            if (userReview) {
+                userReview.rating = userRequest.rating
+            } else {
+                userReview = new UserReview({
+                    user_id: userRequest.user_id,
+                    content_type: userRequest.content_type,
+                    content_id: userRequest.content_id,
+                    rating: userRequest.rating,
+                    review_message: null
+                });
+            }
         }
 
         return {
@@ -163,13 +178,13 @@ module.exports.calculateRating = async (content_id, content_type) => {
         let avgRating = null;
 
         if (arrayRating.length) {
-            avgRating = arrayRating.reduce((p, c) => p + c, 0) / arrayRating.length
+            avgRating = (arrayRating.reduce((p, c) => p + c, 0) / arrayRating.length).toFixed(2);
 
             switch (content_type) {
-                case "Book":``
+                case "Book":
                     await Book.findOneAndUpdate(
-                        { const_content_id: content_id},
-                        { user_rating: avgRating },
+                        {const_content_id: content_id},
+                        {user_rating: avgRating},
                         {
                             new: true,
                             upsert: true
@@ -178,8 +193,8 @@ module.exports.calculateRating = async (content_id, content_type) => {
                     break;
                 case "Movie":
                     await Movie.findOneAndUpdate(
-                        { const_content_id: content_id},
-                        { user_rating: avgRating },
+                        {const_content_id: content_id},
+                        {user_rating: avgRating},
                         {
                             new: true,
                             upsert: true
@@ -188,8 +203,8 @@ module.exports.calculateRating = async (content_id, content_type) => {
                     break;
                 case "Game":
                     await Game.findOneAndUpdate(
-                        { const_content_id: content_id},
-                        { user_rating: avgRating },
+                        {const_content_id: content_id},
+                        {user_rating: avgRating},
                         {
                             new: true,
                             upsert: true
