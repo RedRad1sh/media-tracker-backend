@@ -108,10 +108,6 @@ module.exports.getUserReviews = async (options) => {
  * @throws {Error}
  * @return {Promise}
  */
-
-/*
-* Слева бд - Справа значение, которое должно быть
-* */
 module.exports.updateRating = async (options) => {
     try {
         log.debug(`Обновление оценки контента (пользователь, тип контента, идентификатор контента):
@@ -147,6 +143,70 @@ module.exports.updateRating = async (options) => {
     }
 };
 
+/**
+ * Высчитываем среднюю оценку для контента
+ *
+ * @param {Number} content_id
+ * @param {String} content_type
+ * @throws {Error}
+ * @return {Promise}
+ */
+module.exports.calculateRating = async (content_id, content_type) => {
+    try {
+        const reviews = await UserReview.find({
+            content_id: content_id,
+            content_type: content_type
+        });
+
+        const arrayRating = reviews.map(s => s.rating);
+
+        let avgRating = null;
+
+        if (arrayRating.length) {
+            avgRating = arrayRating.reduce((p, c) => p + c, 0) / arrayRating.length
+
+            switch (content_type) {
+                case "Book":``
+                    await Book.findOneAndUpdate(
+                        { const_content_id: content_id},
+                        { user_rating: avgRating },
+                        {
+                            new: true,
+                            upsert: true
+                        }
+                    )
+                    break;
+                case "Movie":
+                    await Movie.findOneAndUpdate(
+                        { const_content_id: content_id},
+                        { user_rating: avgRating },
+                        {
+                            new: true,
+                            upsert: true
+                        }
+                    )
+                    break;
+                case "Game":
+                    await Game.findOneAndUpdate(
+                        { const_content_id: content_id},
+                        { user_rating: avgRating },
+                        {
+                            new: true,
+                            upsert: true
+                        }
+                    )
+                    break;
+            }
+
+        }
+
+        return avgRating;
+    } catch (err) {
+        log.error(err)
+        throw err
+    }
+};
+
 async function mapReview(review) {
     const user = await User.findOne({_id: review.user_id});
 
@@ -164,6 +224,8 @@ async function mapReview(review) {
     }
 
     return {
+        contentId: content.const_content_id,
+        contentType: review.content_type,
         contentPicture: content.img_url,
         contentTitle: content.title,
         userImage: user.img_url,

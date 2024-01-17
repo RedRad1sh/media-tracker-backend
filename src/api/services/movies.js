@@ -2,6 +2,7 @@ const Movie = require("../../model/Movie");
 const UserLists = require("../../model/user/UserList");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
+const UserReviews = require("./user-reviews");
 const log = logger(config.logger);
 const User = require("../../model/user/User");
 const Game = require("../../model/Game");
@@ -93,19 +94,13 @@ module.exports.getMovies = async (options) => {
 module.exports.getMovieById = async (options) => {
   try {
     let movieId = options.id;
-    let userId = options.userId;
+    let avgRating = await UserReviews.calculateRating(movieId, 'Movie');
 
-    let contenInfo = await Movie.findOne({ const_content_id: movieId});
-    let userLists = await UserLists.find({ user_id: userId, content_type: 'Movie', content_id: contenInfo.const_content_id});
-    
-    let contenInfoUser = { ...contenInfo.toObject() };
+    let movie = await Movie.findOne({ const_content_id: movieId});
 
-    if(userLists){
-      contenInfoUser.userListsInfo = userLists.filter(item => item.content_id === contenInfo.const_content_id);
-    }
     return {
       status: 200,
-      data: contenInfoUser
+      data: {movie : movie, rating : avgRating}
     };
 
   } catch (err) {
