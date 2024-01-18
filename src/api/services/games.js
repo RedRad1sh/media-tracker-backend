@@ -2,7 +2,8 @@ const Game = require("../../model/Game");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const UserLists = require("../../model/user/UserList");
-const UserReviews = require("./user-reviews");
+const UserReviews = require("../../model/user/UserReview");
+const UserReviewService = require("../../api/services/user-reviews");
 const log = logger(config.logger);
 
 /**
@@ -49,9 +50,30 @@ module.exports.getGames = async (options) => {
       query.const_content_id = {$in: gameIds};
     }
 
+
+    let games = await Game.paginate(query, { offset, limit })
+    let userLists = await UserLists.find({ user_id: userId, content_type: 'Game'});
+    let userReviews= await UserReviews.find({user_id: userId, content_type: 'Game'});
+
+    let gamesExtendInfo = games.docs.map(game => {
+      let userListsItem = userLists.find(item => item.content_id === game.const_content_id);
+      
+      let userListAction = userListsItem ? userListsItem.action : '-';
+
+      let userReview = userReviews.find(item => item.content_id === game.const_content_id);
+      let userMark = userReview && userReview.rating !== null ? userReview.rating : '-';
+   
+     return {
+       ...game.toObject(),
+       userListAction: userListAction,
+       userMark: userMark,
+     };
+   });
+
     return {
       status: 200,
-      data: await Game.paginate(query, { offset, limit })
+      data: games,
+      data_extend: gamesExtendInfo,
     };
   } catch (err) {
     log.error(err)
@@ -70,7 +92,7 @@ module.exports.getGameById = async (options) => {
     let gameId = options.id;
     let userId = options.userId;
 
-    let avgRating = await UserReviews.calculateRating(gameId, 'Game');
+    let avgRating = await UserReviewService.calculateRating(gameId, 'Game');
     let game = await Game.findOne({ const_content_id: gameId});
 
     let userLists = await UserLists.find({ user_id: userId, content_type: 'Game', content_id: game.const_content_id});

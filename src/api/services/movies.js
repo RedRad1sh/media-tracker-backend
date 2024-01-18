@@ -2,12 +2,9 @@ const Movie = require("../../model/Movie");
 const UserLists = require("../../model/user/UserList");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
-const UserReviews = require("./user-reviews");
+const UserReviews = require("../../model/user/UserReview");
+const UserReviewService = require("../../api/services/user-reviews");
 const log = logger(config.logger);
-const User = require("../../model/user/User");
-const Game = require("../../model/Game");
-const Book = require("../../model/Book");
-const schemas = { Movie: Movie, Game: Game, Book: Book }
 
 /**
  * @param {Object} options
@@ -75,9 +72,28 @@ module.exports.getMovies = async (options) => {
       query.const_content_id = {$in: moviesIds};
     }
 
+     let movies = await Movie.paginate(query, { offset, limit })
+     let userLists = await UserLists.find({ user_id: userId, content_type: 'Movie'});
+     let userReviews= await UserReviews.find({user_id: userId, content_type: 'Movie'});
+
+     let moviesExtendInfo = movies.docs.map(movie => {
+       let userListsItem = userLists.find(item => item.content_id === movie.const_content_id);
+       let userListAction = userListsItem ? userListsItem.action : '-';
+
+       let userReview = userReviews.find(item => item.content_id === movie.const_content_id);
+       let userMark = userReview && userReview.rating !== null ? userReview.rating : '-';
+    
+      return {
+        ...movie.toObject(),
+        userListAction: userListAction,
+        userMark: userMark,
+      };
+    });
+
     return {
       status: 200,
-      data: await Movie.paginate(query, { offset, limit })
+      data_extend: moviesExtendInfo,
+      data: movies
     };
   } catch (err) {
     log.error(err)
@@ -96,7 +112,7 @@ module.exports.getMovieById = async (options) => {
     let movieId = options.id;
     let userId = options.userId;
 
-    let avgRating = await UserReviews.calculateRating(movieId, 'Movie');
+    let avgRating = await UserReviewService.calculateRating(movieId, 'Movie');
     let movie = await Movie.findOne({ const_content_id: movieId});
     let userLists = await UserLists.find({ user_id: userId, content_type: 'Movie', content_id: movie.const_content_id});
     let contenInfoUser  = userLists.filter(item => item.content_id === movie.const_content_id)[0];
@@ -116,14 +132,6 @@ module.exports.getMovieById = async (options) => {
     throw err
   }
 };
-
-
-async function fillContentJson(content_type, userList) {
-  const id = (await schemas[content_type]
-      .findOne({ 'const_content_id': userList.content_id }))._id;
-  userList.content_id = id;
-  return await userList.populate('content_id', null, content_type);
-}
 
 /**
  * @throws {Error}
