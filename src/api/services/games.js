@@ -12,43 +12,43 @@ const log = logger(config.logger);
  * @return {Promise}
  */
 module.exports.getGames = async (options) => {
-  try {
-    log.debug(`Параметры пагинации, page: ${options.page} и size: ${options.size}`)
+    try {
+        log.debug(`Параметры пагинации, page: ${options.page} и size: ${options.size}`)
 
-    const userId = options.userId;
-    const limit = options.size ? + options.size : 3;
-    const offset = options.page ? options.page * limit : 0;
-    const searchString = options.searchString;
-    const genres = options.genres.join("|");
-    const rate = options.rate;
-    const yearFrom = options.yearFrom;
-    const yearTo = options.yearTo;
-    const selectedLists = options.selectedLists;
+        const userId = options.userId;
+        const limit = options.size ? +options.size : 3;
+        const offset = options.page ? options.page * limit : 0;
+        const searchString = options.searchString;
+        const genres = options.genres.join("|");
+        const rate = options.rate;
+        const yearFrom = options.yearFrom;
+        const yearTo = options.yearTo;
+        const selectedLists = options.selectedLists;
 
-    let query = {title: {$regex: new RegExp(searchString.toLowerCase(), "i")}};
-    if (genres.length) {
-      query.genres = {$regex: new RegExp(genres.toLowerCase(), "i")};
-    }
-    if (rate) {
-      query.user_rating = {$gte: Number(rate), $lt: Number(rate) + 1};
-    }
-    if (yearFrom && yearTo) {
-      query.release_date = {$gte: new Date(options.yearFrom, 0, 1), $lte: new Date(options.yearTo, 0, 1)};
-    } else {
-      if (yearFrom) {
-        query.release_date = {$gte: new Date(options.yearFrom, 0, 1)};
-      }
-      if (yearTo) {
-        query.release_date = {$lte: new Date(options.yearTo, 0, 1)};
-      }
-    }
+        let query = {title: {$regex: new RegExp(searchString.toLowerCase(), "i")}};
+        if (genres.length) {
+            query.genres = {$regex: new RegExp(genres.toLowerCase(), "i")};
+        }
+        if (rate) {
+            query.user_rating = {$gte: Number(rate), $lt: Number(rate) + 1};
+        }
+        if (yearFrom && yearTo) {
+            query.release_date = {$gte: new Date(options.yearFrom, 0, 1), $lte: new Date(options.yearTo, 0, 1)};
+        } else {
+            if (yearFrom) {
+                query.release_date = {$gte: new Date(options.yearFrom, 0, 1)};
+            }
+            if (yearTo) {
+                query.release_date = {$lte: new Date(options.yearTo, 0, 1)};
+            }
+        }
 
-    if (selectedLists !== undefined && selectedLists.length > 0 && userId) {
-      const listsQuery = {user_id: userId, content_type: "Game", action: {$in: selectedLists}};
-      const contentIds = await UserLists.find(listsQuery).select({content_id: 1, _id: 0});
-      const gameIds = contentIds.map(el => el.content_id);
-      query.const_content_id = {$in: gameIds};
-    }
+        if (selectedLists !== undefined && selectedLists.length > 0 && userId) {
+            const listsQuery = {user_id: userId, content_type: "Game", action: {$in: selectedLists}};
+            const contentIds = await UserLists.find(listsQuery).select({content_id: 1, _id: 0});
+            const gameIds = contentIds.map(el => el.content_id);
+            query.const_content_id = {$in: gameIds};
+        }
 
 
     let games = await Game.paginate(query, { offset, limit })
@@ -57,12 +57,12 @@ module.exports.getGames = async (options) => {
 
     let gamesExtendInfo = games.docs.map(game => {
       let userListsItem = userLists.find(item => item.content_id === game.const_content_id);
-      
+
       let userListAction = userListsItem ? userListsItem.action : '-';
 
       let userReview = userReviews.find(item => item.content_id === game.const_content_id);
       let userMark = userReview && userReview.rating !== null ? userReview.rating : '-';
-   
+
      return {
        ...game.toObject(),
        userListAction: userListAction,
@@ -88,28 +88,45 @@ module.exports.getGames = async (options) => {
  * @return {Promise}
  */
 module.exports.getGameById = async (options) => {
-  try {
-    let gameId = options.id;
-    let userId = options.userId;
+    try {
+        let gameId = options.id;
+        let userId = options.userId;
 
-    let avgRating = await UserReviewService.calculateRating(gameId, 'Game');
-    let game = await Game.findOne({ const_content_id: gameId});
+        await UserReviewService.calculateRating(gameId, 'Game');
 
-    let userLists = await UserLists.find({ user_id: userId, content_type: 'Game', content_id: game.const_content_id});
-    let contenInfoUser  = userLists.filter(item => item.content_id === game.const_content_id)[0];
+        let game = await Game.findOne({ const_content_id: gameId});
 
-    if(!contenInfoUser){
-      contenInfoUser = { content_id: game.const_content_id, action: '-' };
+        let userLists = await UserLists.find({
+            user_id: userId,
+            content_type: 'Game',
+            content_id: game.const_content_id
+        });
+        let contenInfoUser = userLists.filter(item => item.content_id === game.const_content_id)[0];
+
+        if (!contenInfoUser) {
+            contenInfoUser = {content_id: game.const_content_id, action: '-'};
+        }
+
+        let userRating = await UserReviews.findOne({
+            user_id: userId,
+            content_type: 'Game',
+            content_id: game.const_content_id
+        });
+
+        let rating = '-';
+
+        if (userRating && userRating.rating != null) {
+            rating = userRating.rating;
+        }
+
+        return {
+            status: 200,
+            data: {game: game, rating: rating, userList: contenInfoUser}
+        };
+    } catch (err) {
+        log.error(err)
+        throw err
     }
-
-    return {
-      status: 200,
-      data: {game : game, rating : avgRating, userList: contenInfoUser}
-    };
-  } catch (err) {
-    log.error(err)
-    throw err
-  }
 };
 
 /**
@@ -117,20 +134,20 @@ module.exports.getGameById = async (options) => {
  * @returns {Promise}
  */
 module.exports.getGamesGenres = async () => {
-  try {
-    const genres = await Game.find().distinct("genres");
-    const result = genres.map(genre => {
-      return genre.split(",");
-    }).flat()
+    try {
+        const genres = await Game.find().distinct("genres");
+        const result = genres.map(genre => {
+            return genre.split(",");
+        }).flat()
 
-    return {
-      status: 200,
-      data: Array.from(new Set(result))
-    };
-  } catch (err) {
-    log.error(err)
-    throw err
-  }
+        return {
+            status: 200,
+            data: Array.from(new Set(result))
+        };
+    } catch (err) {
+        log.error(err)
+        throw err
+    }
 }
 
 
