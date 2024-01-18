@@ -96,22 +96,22 @@ module.exports.getGameById = async (options) => {
 
         let game = await Game.findOne({ const_content_id: gameId});
 
-        let userLists = await UserLists.find({
+        let userLists = userId !== "undefined" ? await UserLists.find({
             user_id: userId,
             content_type: 'Game',
             content_id: game.const_content_id
-        });
+        }) : [];
         let contenInfoUser = userLists.filter(item => item.content_id === game.const_content_id)[0];
 
         if (!contenInfoUser) {
             contenInfoUser = {content_id: game.const_content_id, action: '-'};
         }
 
-        let userRating = await UserReviews.findOne({
+        let userRating = userId !== "undefined" ? await UserReviews.findOne({
             user_id: userId,
             content_type: 'Game',
             content_id: game.const_content_id
-        });
+        }) : undefined;
 
         let rating = '-';
 

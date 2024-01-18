@@ -117,22 +117,22 @@ module.exports.getBookById = async (options) => {
         await UserReviewService.calculateRating(bookId, 'Book');
 
         let book = await Book.findOne({const_content_id: bookId});
-        let userLists = await UserLists.find({
+        let userLists = userId !== "undefined" ? await UserLists.find({
             user_id: userId,
             content_type: 'Book',
             content_id: book.const_content_id
-        });
+        }) : [];
         let contenInfoUser = userLists.filter(item => item.content_id === book.const_content_id)[0];
 
         if (!contenInfoUser) {
             contenInfoUser = {content_id: book.const_content_id, action: '-'};
         }
 
-        let userRating = await UserReviews.findOne({
+        let userRating = userId !== "undefined" ? await UserReviews.findOne({
             user_id: userId,
             content_type: 'Book',
             content_id: book.const_content_id
-        });
+        }) : undefined;
 
         let rating = '-';
 
