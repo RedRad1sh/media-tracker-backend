@@ -27,7 +27,7 @@ router.get('/', async (req, res, next) => {
   try {
     const result = await movies.getMovies(options);
     res.status(result.status || 200).send({
-      data: result.data.docs,
+      data: result.data1,
       totalItems: result.data.totalDocs,
       currentPage: result.data.page - 1,
       totalPages: result.data.totalPages

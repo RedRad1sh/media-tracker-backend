@@ -2,7 +2,7 @@ const Movie = require("../../model/Movie");
 const UserLists = require("../../model/user/UserList");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
-const UserReviews = require("./user-reviews");
+const UserReviews = require("../../model/user/UserReview");
 const log = logger(config.logger);
 const User = require("../../model/user/User");
 const Game = require("../../model/Game");
@@ -75,9 +75,32 @@ module.exports.getMovies = async (options) => {
       query.const_content_id = {$in: moviesIds};
     }
 
+
+     let movies = await Movie.paginate(query, { offset, limit })
+     let userLists = await UserLists.find({ user_id: '659d2e8f55097646d20f6983', content_type: 'Movie'});
+     let avgRating = await UserReviews.find({user_id: '659d2e8f55097646d20f6983', content_type: 'Movie'});
+
+     let moviesWithUserListsInfo = movies.docs.map(movie => {
+       let userListsItem = userLists.find(item => item.content_id === movie.const_content_id);
+       let userListsInfo = userListsItem ? userListsItem.action : '-';
+
+       let mark1 = avgRating.find(item => item.content_id === movie.const_content_id);
+
+       let mark = mark1 ? mark1.rating : '-';
+    
+      return {
+        ...movie.toObject(),
+        userListsInfo: userListsInfo,
+        mark: mark,
+      };
+    });
+
+     console.log(moviesWithUserListsInfo);
+
     return {
       status: 200,
-      data: await Movie.paginate(query, { offset, limit })
+      data1: moviesWithUserListsInfo,
+      data: movies
     };
   } catch (err) {
     log.error(err)
