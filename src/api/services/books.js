@@ -2,7 +2,8 @@ const Book = require("../../model/Book");
 const logger = require('../../lib/logger');
 const config = require('../../lib/config');
 const UserLists = require("../../model/user/UserList");
-const UserReviews = require("../../api/services/user-reviews");
+const UserReviews = require("../../model/user/UserReview");
+const UserReviewService = require("../../api/services/user-reviews");
 const log = logger(config.logger);
 
 /**
@@ -71,9 +72,30 @@ module.exports.getBooks = async (options) => {
             query.const_content_id = {$in: bookIds};
         }
 
+
+        let books = await Book.paginate(query, { offset: offset, limit: limit, sort: { openlib_rating : "desc"}});
+        let userLists = await UserLists.find({ user_id: userId, content_type: 'Book'});
+        let userReviews= await UserReviews.find({user_id: userId, content_type: 'Book'});
+    
+        let booksExtendInfo = books.docs.map(book => {
+          let userListsItem = userLists.find(item => item.content_id === book.const_content_id);
+          
+          let userListAction = userListsItem ? userListsItem.action : '-';
+    
+          let userReview = userReviews.find(item => item.content_id === book.const_content_id);
+          let userMark = userReview && userReview.rating !== null ? userReview.rating : '-';
+       
+         return {
+           ...book.toObject(),
+           userListAction: userListAction,
+           userMark: userMark,
+         };
+       });
+
         return {
             status: 200,
-            data: await Book.paginate(query, { offset: offset, limit: limit, sort: { openlib_rating : "desc"}})
+            data: books,
+            data_extend: booksExtendInfo,
         };
     } catch (err) {
         log.error(err)
@@ -92,7 +114,7 @@ module.exports.getBookById = async (options) => {
         let bookId = options.id;
         let userId = options.userId;
 
-        let avgRating = await UserReviews.calculateRating(bookId, 'Book');
+        let avgRating = await UserReviewService.calculateRating(bookId, 'Book');
 
         let book = await Book.findOne({ const_content_id: bookId});
         let userLists = await UserLists.find({ user_id: userId, content_type: 'Book', content_id: book.const_content_id});
