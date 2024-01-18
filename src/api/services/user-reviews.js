@@ -122,7 +122,7 @@ module.exports.updateRating = async (options) => {
         })
 
         if (isNaN(userRequest.rating)) {
-            if (userRequest.review_message == null || userRequest.review_message === '') {
+            if (userReview.review_message == null || userReview.review_message === '') {
                 await UserReview.findOneAndDelete({
                     _id: userReview._id
                 })

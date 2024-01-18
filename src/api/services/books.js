@@ -49,10 +49,10 @@ module.exports.getBooks = async (options) => {
             for (let duration of durations) {
                 switch (duration) {
                     case "SHORT":
-                        durationQueries.push({page_count: {$lte : 120}});
+                        durationQueries.push({page_count: {$lte: 120}});
                         break;
                     case "MEDIUM":
-                        durationQueries.push({page_count: {$gte: 120, $lte : 500}});
+                        durationQueries.push({page_count: {$gte: 120, $lte: 500}});
                         break;
                     case "LONG":
                         durationQueries.push({page_count: {$gte: 500}});
@@ -75,16 +75,16 @@ module.exports.getBooks = async (options) => {
 
         let books = await Book.paginate(query, { offset: offset, limit: limit, sort: { openlib_rating : "desc"}});
         let userLists = await UserLists.find({ user_id: userId, content_type: 'Book'});
-        let userReviews= await UserReviews.find({user_id: userId, content_type: 'Book'});
-    
+        let userReviews = await UserReviews.find({user_id: userId, content_type: 'Book'});
+
         let booksExtendInfo = books.docs.map(book => {
           let userListsItem = userLists.find(item => item.content_id === book.const_content_id);
-          
+
           let userListAction = userListsItem ? userListsItem.action : '-';
-    
+
           let userReview = userReviews.find(item => item.content_id === book.const_content_id);
           let userMark = userReview && userReview.rating !== null ? userReview.rating : '-';
-       
+
          return {
            ...book.toObject(),
            userListAction: userListAction,
@@ -114,24 +114,40 @@ module.exports.getBookById = async (options) => {
         let bookId = options.id;
         let userId = options.userId;
 
-        let avgRating = await UserReviewService.calculateRating(bookId, 'Book');
+        await UserReviewService.calculateRating(bookId, 'Book');
 
-        let book = await Book.findOne({ const_content_id: bookId});
-        let userLists = await UserLists.find({ user_id: userId, content_type: 'Book', content_id: book.const_content_id});
-        let contenInfoUser  = userLists.filter(item => item.content_id === book.const_content_id)[0];
-    
-        if(!contenInfoUser){
-          contenInfoUser = { content_id: book.const_content_id, action: '-' };
+        let book = await Book.findOne({const_content_id: bookId});
+        let userLists = await UserLists.find({
+            user_id: userId,
+            content_type: 'Book',
+            content_id: book.const_content_id
+        });
+        let contenInfoUser = userLists.filter(item => item.content_id === book.const_content_id)[0];
+
+        if (!contenInfoUser) {
+            contenInfoUser = {content_id: book.const_content_id, action: '-'};
+        }
+
+        let userRating = await UserReviews.findOne({
+            user_id: userId,
+            content_type: 'Book',
+            content_id: book.const_content_id
+        });
+
+        let rating = '-';
+
+        if (userRating && userRating.rating != null) {
+            rating = userRating.rating;
         }
 
         return {
-          status: 200,
-          data: {book : book, rating : avgRating, userList: contenInfoUser}
+            status: 200,
+            data: {book: book, rating: rating,  userList: contenInfoUser}
         };
-      } catch (err) {
+    } catch (err) {
         log.error(err)
         throw err
-      }
+    }
 };
 
 /**
