@@ -115,23 +115,22 @@ module.exports.getMovieById = async (options) => {
         await UserReviewService.calculateRating(movieId, 'Movie');
 
         let movie = await Movie.findOne({const_content_id: movieId});
-        let userLists = await UserLists.find({
+        let userLists = userId !== "undefined" ? await UserLists.find({
             user_id: userId,
             content_type: 'Movie',
             content_id: movie.const_content_id
-        });
+        }) : [];
         let contenInfoUser = userLists.filter(item => item.content_id === movie.const_content_id)[0];
-
 
         if (!contenInfoUser) {
             contenInfoUser = {content_id: movie.const_content_id, action: '-'};
         }
 
-        let userRating = await UserReviews.findOne({
+        let userRating = userId !== "undefined" ? await UserReviews.findOne({
             user_id: userId,
             content_type: 'Movie',
             content_id: movie.const_content_id
-        });
+        }) : undefined;
 
         let rating = '-';
 
